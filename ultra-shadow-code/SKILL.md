@@ -34,7 +34,7 @@ Operate on a leaf node path `nodes/<path>/`. Do not skip or reorder.
 
 2. **Read inputs.** This node's SPEC+INTERFACE+PLAN, parent INTERFACE.md, every sibling INTERFACE.md in `depends-on`, and any consumer INTERFACE.md. Capture each sibling INTERFACE path + last-modified hash — cited inline in shadow.
 
-3. **Enumerate modules from PLAN.md.** PLAN.md's file-structure map names modules. 1 module → single `<module>.shadow.ts`; 2+ → one file per module plus `META.md`.
+3. **Enumerate modules from PLAN.md.** PLAN.md's file-structure map names modules. 1 module → single `<module>.shadow.ts`; 2+ → one file per module. Every leaf shadow gets a `META.md` regardless of module count — required by Steps 6/9/10.
 
 4. **Draft shadow per module.** For each module emit `<module>.shadow.ts` under `SHADOW/` containing:
    - **`context()` header** declaring `imports from`, `touches`, `exports` — required, first declaration. See SHADOW_SPEC.md §2.

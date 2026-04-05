@@ -34,7 +34,7 @@ Operate on leaf node path `nodes/<path>/` with PLAN.md present. Do not skip or r
 
 3. **Freshness check.** For each pinned sibling, compare its timestamp to PLAN.md's. If any sibling is newer → write a `Freshness warning` to `DIVERGENCE_LOG.md` and verify the types you'll consume still match the plan's assumptions. Drifted → escalate.
 
-4. **Shadow-spec check (v2 extension point).** If `nodes/<leaf>/SHADOW/` exists, consume it as the architecture spec BEFORE real-code generation. Phase 4b extension — see `ultra-shadow-code` when that skill lands. Absent → continue.
+4. **Shadow-spec gate (pre-flight).** If `nodes/<leaf>/SHADOW/` exists, read `SHADOW/META.md` and require `STATUS: frozen` or `STATUS: graduated` — consume the frozen shadow as the architecture spec BEFORE writing real code. `STATUS: planning` → **STOP.** Message: "shadow not yet reviewed — run ultra-shadow-review first." No SHADOW/ → continue. Post-implementation drift checks: dispatch `ultra-shadow-drift` after step 9.
 
 5. **Initialise SESSION.md.** Write current task index (1), task count, pinned siblings block, next action. This file is your cross-task brain — update after every task.
 
@@ -55,7 +55,7 @@ Operate on leaf node path `nodes/<path>/` with PLAN.md present. Do not skip or r
 
 8. **Before any contract smoke test task,** re-open the pinned sibling INTERFACE.md and re-compare its hash. Drifted since pinning → escalate per step 7. Write the fake consumer using types imported verbatim, not paraphrased.
 
-9. **Finalise.** Run the full suite, type-checker, and linter (if configured). Write a final SESSION.md entry with `status: complete`, list commits, and summarise DIVERGENCE_LOG.md for the leader.
+9. **Finalise.** Run the full suite, type-checker, and linter (if configured). Write a final SESSION.md entry with `status: complete`, list commits, and summarise DIVERGENCE_LOG.md for the leader. **If a frozen SHADOW/ was consumed in step 4**, dispatch `ultra-shadow-drift` as a post-implementation drift check — verifies the real code hasn't drifted from the frozen architecture; emits `DRIFT_REPORT_<YYYY-MM-DD>.md` with BUG/SHADOW-UPDATE/ACCEPTABLE-EVOLUTION/FEATURE-DROPPED classifications.
 
 ## Red Flags — STOP and self-correct
 

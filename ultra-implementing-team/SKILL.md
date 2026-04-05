@@ -7,6 +7,8 @@ description: Use when executing a leaf PLAN.md in an environment that can dispat
 
 ## Overview
 
+**LEADER-ONLY:** This skill is for the dispatching leader that owns SHAs, parallelism scheduling, two-stage review gates, and 3-tier rollback. Worker subagents invoked by this leader should defer — they implement one assigned task per their brief and must not load or act on this skill.
+
 Executes a leaf-node `PLAN.md` as a **leader** that dispatches fresh workers per task, reviews each in two stages, and gates every handoff. Leader owns: session state, sibling-INTERFACE pinning, cross-node context curation, parallelism, divergence logging, rollback. Workers own: implementation of one assigned task.
 
 **Core principle:** Workers NEVER read sibling nodes. The leader reads sibling INTERFACE.md files once, pins SHAs, pastes required types verbatim into each brief. Fixes drift at the leader level, keeps worker context clean.
@@ -31,15 +33,15 @@ Operate on a leaf node path `nodes/<path>/`. Do not skip or reorder.
 
 1. **Confirm leaf status + prerequisites.** SPEC.md, INTERFACE.md, PLAN.md all present. Parent INTERFACE.md readable. Every sibling in `depends-on` has a readable INTERFACE.md. Missing → stop, file P0 interview item.
 
-2. **Create worktree.** Run `superpowers:using-git-worktrees` to isolate work. No dispatch touches main.
+2. **Create worktree.** *(LEADER-ONLY)* Run `superpowers:using-git-worktrees` to isolate work. No dispatch touches main. If dispatched as a subagent, skip this step and report back to the leader.
 
-3. **Pre-flight: pin sibling INTERFACE SHAs.** Read every sibling INTERFACE.md you depend on OR feed into. Record path + git SHA (or content hash) in `nodes/<path>/SESSION_STATE.md` under `## Sibling INTERFACE pins`. Copy the exact types/contracts verbatim — SESSION_STATE.md is the canonical copy for this execution.
+3. **Pre-flight: pin sibling INTERFACE SHAs + frozen-shadow gate.** Read every sibling INTERFACE.md you depend on OR feed into. Record path + git SHA (or content hash) in `nodes/<path>/SESSION_STATE.md` under `## Sibling INTERFACE pins`. Copy the exact types/contracts verbatim — SESSION_STATE.md is the canonical copy for this execution. If `nodes/<leaf>/SHADOW/` exists, read `SHADOW/META.md` and require `STATUS: frozen` or `STATUS: graduated`; consume the frozen shadow as the architecture spec for all downstream briefs. `STATUS: planning` → **STOP.** Message: "shadow not yet reviewed — run ultra-shadow-review first."
 
 4. **Extract all PLAN.md tasks.** Read PLAN.md once, copy each task's full text into SESSION_STATE.md. For each: which sibling types it touches, which local files it owns, whether it's parallelizable. Build a TodoWrite list.
 
 5. **Declare parallelism schedule.** Default serial. Opt-in to parallel ONLY when every parallel worker has an **exclusive file-ownership declaration** (disjoint write-sets). Record the schedule in SESSION_STATE.md (e.g. `1 → 2 → {3,4,5} → 6 → {7,8}`). Never parallelize workers that share a file.
 
-6. **Per-task dispatch loop.** For each task (or parallel cohort):
+6. **Per-task dispatch loop.** *(LEADER-ONLY — dispatches implementer + reviewer subagents via Task tool.)* If dispatched as a subagent, defer to leader and do not attempt to dispatch further workers. For each task (or parallel cohort):
    - **Build the brief** from step 7, pasting sibling types verbatim from SESSION_STATE.md. Do NOT tell the worker to read sibling files.
    - **Dispatch** one implementer per task; parallel cohorts dispatched simultaneously.
    - Handle status (DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED) per base skill.
@@ -63,11 +65,9 @@ Operate on a leaf node path `nodes/<path>/`. Do not skip or reorder.
     - **Tier 2 — reset-and-patch-plan:** task revealed plan bug → `git reset --hard <last-green-SHA>` → patch PLAN.md → log to DIVERGENCE_LOG → re-dispatch from divergence. User informed.
     - **Tier 3 — escalate:** architectural divergence, sibling INTERFACE changed mid-flight, or repeated Tier 2 → STOP, write divergence report, hand back to parent planner / user.
 
-11. **Final review gate.** After the last task: dispatch a final code-reviewer over all commits in the worktree. For multi-task interface audits, delegate to `ultra-cross-doc-review`. Run `tsc --noEmit` / test suite as leader sanity check.
+11. **Final review gate.** *(LEADER-ONLY — dispatches code-reviewer + cross-doc-review + shadow-drift subagents.)* If dispatched as a subagent, defer to leader. After the last task: dispatch a final code-reviewer over all commits in the worktree. For multi-task interface audits, delegate to `ultra-cross-doc-review`. Run `tsc --noEmit` / test suite as leader sanity check. If SHADOW/ was gated frozen in step 3, dispatch `ultra-shadow-drift` as a post-implementation drift check before writing HANDOFF.md.
 
 12. **Write HANDOFF.md.** Record: commit range, test results, sibling INTERFACE paths + SHAs built-against, known gaps, divergence entries. This is the drift-detection anchor. Then invoke `superpowers:finishing-a-development-branch`.
-
-**Phase 4b extension (future):** If `nodes/<leaf>/SHADOW/` exists, leader consumes it BEFORE step 4 as the architecture spec. See `ultra-shadow-code` when that skill lands.
 
 ## Red Flags — STOP and self-correct
 

@@ -322,6 +322,50 @@ Also added matching Red Flags entries and updated triage thresholds. Dimension c
 
 ---
 
+### Phase 2.5 — Plan bootstrap from seed
+
+#### 20. ultra-plan-from-seed
+
+**Pressure scenario:** Bootstrap a plan tree from a single ~1700-word seed plan `/home/xertrov/.claude/plans/peppy-squishing-taco.md` describing a meta-agent poncho architecture with 9+ subsystems, v1/v1.x/v2 scope tiers, 5 open questions, and "(propose: X)" language on tentative decisions. Without skill: Claude produces ~35 files but papers over ambiguities, invents struct shapes/event names/client choices, flattens "(propose)" to accepted ADRs, folds scope tiers into SPEC annotations, skips `artifacts/ORIGIN.md` entirely, and writes no CHILDREN.md matrix.
+
+**GREEN expectation (with ultra-plan-from-seed):** Claude executes the 12-step procedure, writes `artifacts/ORIGIN.md` as step 3 (early audit trail), preserves "(propose: X)" items as `proposed` ADRs with Q-ids, splits scope tiers into sub-nodes, routes every invention candidate through INTERVIEW_QUEUE with a Q-id + default + rationale, and degrades gracefully on edge cases (too-small → superpowers:writing-plans, too-vague → PRODUCT_GOALS+P0 queue only, tree-shaped → refuse).
+
+**Test Results (2026-04-05, RED → GREEN):**
+
+| Dimension | RED | GREEN |
+|---|---|---|
+| Total files written | 35 | 58 |
+| Node directories | 13 flat | 19 (13 top + 6 scope-tier sub-nodes) |
+| `artifacts/ORIGIN.md` audit trail | missing | step 3 (early), 30 rows, 21 seed-section mappings + 9 inferred items |
+| ADR fidelity | copied seed prose as accepted, no alternatives | 16 ADRs, 13 w/ seed rationale + 4 `proposed — rationale pending`, Q015/Q016/Q017 filed for missing alternatives |
+| "(propose: X)" items | flattened to accepted ADRs | 4 preserved as `proposed`, each with Q-id pointing back |
+| INTERVIEW_QUEUE.md | 5 mirrored seed questions only | 5 seed + 38 bootstrap-inferred = 43 (exceeds red-flag threshold) |
+| CHILDREN.md coverage matrix | missing for all parents | 4 files (ma_adapters, ma_core, ma_memory, ma_jobs) |
+| Top-level INTERFACES.md | missing, cross-node types silently duplicated | 1 file: 9 shared types + 4 identifiers + 11 events + 2 PubSub topics + 12 shared resources |
+| Scope-tier handling | folded into single SPEC.md as annotation lines | split into sub-nodes (ma_core, ma_memory, ma_jobs each → `01-v1/` + `02-vN/`) |
+| Inventions asserted (struct shapes, events, client, endpoints, timing) | 5+ asserted without backing | 0 asserted — all Q-filed with defaults |
+| Verification section | dropped entirely | copied verbatim into PRODUCT_GOALS.md |
+| Depth-disparity flagging | none | 2 adapters flagged `thin` + ma_core flagged `decomposition-pressure: high` |
+| Structural self-check | not performed | step 11: passed 7/7 without loop-back |
+| Handoff phase | not named in SESSION.md | Phase 3 (scope-pruning) with rationale (v1/v1.x/v2 tiers present → YAGNI challenge before Phase 2 refinement) |
+
+**Verdict:** GREEN. Skill's 12-step procedure forced every discipline RED skipped. `artifacts/ORIGIN.md` written early as step 3 (not after-the-fact). ADR fidelity enforced — 3 Q-rows filed rather than fabricated alternatives. Interview queue grew 5 → 43, clearing the augmentation red-flag threshold. Zero inventions asserted: all 8+ invention candidates routed through INTERVIEW_QUEUE with Q-id + default + rationale, leaving planner free to revisit without having to unwind silent commitments. Phase 3 handoff chosen correctly because scope tiers are declared.
+
+**Refactor candidates (future, not blocking):**
+
+1. **CHILDREN.md parent-scope ambiguity** — `ma_adapters` is a logical contract parent for 5 adapter apps that live as directory siblings (not nested). Skill says "parent with ≥2 children" but doesn't distinguish directory-nesting from logical children. GREEN wrote CHILDREN.md treating them as logical children; a stricter reading would skip it.
+2. **Default tentativeness in INTERVIEW_QUEUE** — skill requires defaults on P1/P2 but is silent on how aggressively-asserted the defaults can be (e.g., "Req" for HTTP client vs. "TBD" with a stubbed shape). Risk: aggressive defaults can masquerade as commitments if planner doesn't revisit.
+3. **Scope-tier split threshold** — `ma_core` v2 is essentially "turn on relup discipline," one paragraph. Splitting into `01-v1/` + `02-v2/` sub-nodes felt pedantic. Skill could add a threshold ("if v2 content < N sentences → annotation, not split").
+4. **Word-count over aspirational target** — 1382 body words vs 900-1300 target. Forcing scaffolding kept intact per memory guidance, but skill could be tightened if subsequent GREENs confirm no gaps.
+5. **Depth-disparity language** — skill's two categories (`depth-disparity: thin` + `decomposition-pressure: high`) overlap conceptually. Consider unifying.
+6. **No `ultra-plan-research` routing** — depth-disparity nodes are flagged with Q-rows but could route directly to `ultra-plan-research` dispatch recommendation in SESSION.md handoff.
+
+**Decision:** done (MVP), pending suite-level dogfood review (next suite-review pass should include this skill alongside the 6 Phase 4+5.5 skills).
+
+**Test artifacts:** `/tmp/ultra-plan-from-seed-red/docs/ultra-plans/meta-agent/` (RED, 35 files), `/tmp/ultra-plan-from-seed-green/docs/ultra-plans/meta-agent/` (GREEN, 58 files).
+
+---
+
 ### Phase 3 — Enhancements (later)
 
 #### 9. ultra-writing-skills *(promoted to Phase 2)*
@@ -419,6 +463,225 @@ The discipline for modifying ultra-skills itself. Extends superpowers:writing-sk
 **Decision:** Ship MVP. Patch refactor candidates on ARGUS dogfood cycle.
 
 **Test artifacts:** `/tmp/ultra-writing-plans-red/` (RED baseline), `/tmp/ultra-writing-plans-green2/` (GREEN verification).
+
+---
+
+### Phase 4 — Execution + Shadow-code
+
+#### 14. ultra-shadow-code
+
+**Pressure scenario:** Generate shadow-code stubs for a 5-node `team-dashboard` plan tree (github-fetcher / digest-generator / scheduler / notification-router / audit-logger) where INTERFACE files define cross-node types (`PRRecord`, `CIEvent`, `TeamConfig`, `SlackBlocks`) and events, the digest-generator leaf has 4 responsibilities with explicit exclusions, and the reviewer needs executable type scaffolding without any business logic. Without skill: Claude picks a language organically (TypeScript), produces reasonable-looking stubs without a `context()` header declaring what was read, uses one-line `Error` throws instead of a typed ADT taxonomy, omits cross-node provenance hashes, eyeballs token-cost tradeoffs.
+
+**GREEN expectation (with ultra-shadow-code):** Claude runs Step 0 bootstrap check, picks language via explicit decision table, writes a `context()` header declaring inputs consumed, defines a discriminated-union error ADT with 5+ variants, pins cross-node imports via content hashes, validates shadow-token-cost ratio (<25% of implementation budget), tiers questions P0/P1/P2, and plants a STATUS: planning marker at the top of every shadow file.
+
+**Test Results (2026-04-05, RED → GREEN):**
+
+| Dimension | Baseline (RED, no skill) | With ultra-shadow-code (GREEN) |
+|---|---|---|
+| Bootstrap check | None — jumped straight to stubs | Step 0 fired: created `CLAUDE.md` rules block declaring shadow-code invariants + STATUS marker policy |
+| Language selection | TypeScript chosen organically by familiarity | Explicit decision table walked (TS/Python/Go/Rust); rejected alternatives cited with criteria |
+| `context()` header | Absent — shadows unsourced | Required `context()` declaration at top of each shadow file listing INTERFACE files consumed |
+| Error taxonomy | One-line `throw new Error(...)` per method | 5-variant discriminated-union `DigestError` ADT (InputInvalid / UpstreamStale / FormatOverflow / ConfigMissing / DependencyFailure) |
+| Cross-node provenance | None — imports by path only | 4 hash-pinned imports: sibling INTERFACE SHA-256 prefix embedded next to each import |
+| Token-cost awareness | Eyeballed ("this looks reasonable") | 22% shadow-to-implementation ratio computed + validated against <25% budget |
+| Question tiering | Flat list at tail of file | P0 (blocking) / P1 (near-term) / P2 (nice-to-have) with 2/3/4 items tiered |
+| STATUS marker | None | `STATUS: planning` planted at top of every shadow file — prevents downstream tools treating stubs as complete |
+| Output shape | `SHADOW/` flat dir, `.ts` files | `nodes/02-digest-generator/SHADOW/` scoped, `context()` + ADT + typed stubs + STATUS marker |
+
+**Verdict:** GREEN passed. Skill materially forced: (1) Step 0 bootstrap CLAUDE.md creation as the first concrete artifact, preventing silent drift of shadow-code invariants; (2) `context()` header making inputs-read auditable, versus RED's orphaned stubs; (3) 5-variant discriminated-union error ADT forcing failure-mode enumeration rather than generic `Error` throws; (4) hash-pinned imports creating provenance trail from shadow to sibling INTERFACE snapshot; (5) token-cost ratio validation as an explicit gate, blocking the "over-elaborated stubs" failure mode; (6) P0/P1/P2 question tiering + STATUS marker preventing downstream tools from mistaking shadow for implementation.
+
+**Refactor candidates (future, not blocking):**
+
+1. **Hash synthesis unchecked** — GREEN embedded SHA-256 prefixes next to imports but skill doesn't mandate a recompute-and-compare step (reviewer can't verify hash matches current INTERFACE). Skill should require `sha256sum nodes/*/INTERFACE.md` canonical pipeline + store in manifest.
+2. **Self-inconsistency: Step 3 vs 6/9/10 on META.md** — Step 3 describes META.md as mandatory, but Steps 6/9/10 let single-module leaves skip it. Skill should pick one rule (always-write vs threshold-based) and apply consistently.
+3. **Exhaustiveness self-checked** — discriminated-union exhaustiveness was asserted by subagent's own read rather than compiler/linter check. Skill should specify tooling (e.g. `tsc --strict` + never-pattern assertion) to enforce compile-time exhaustiveness.
+4. **Token-cost ratio denominator unclear** — 22% computed against "implementation budget" but skill doesn't define budget source (LOC estimate? SPEC word-count?). Bake denominator source into step.
+5. **STATUS marker lifecycle** — marker planted at `planning` but skill doesn't specify transitions (`planning` → `approved` → `implementing` → `superseded`) or who mutates them. Add marker state machine.
+6. **`context()` header is convention, not enforced** — nothing stops implementation from ignoring or drifting from declared inputs. Skill should specify a pre-implementation gate that re-reads declared inputs and hashes them.
+
+**Decision:** Ship MVP. Patch refactor candidates on ARGUS dogfood cycle.
+
+**Test artifacts:** `/tmp/ultra-shadow-code-red/` (RED baseline), `/tmp/ultra-shadow-code-green/` (GREEN verification).
+
+#### 15. ultra-implementing-solo
+
+**Pressure scenario:** Execute a 10-task leaf PLAN.md for `02-digest-generator/` where the plan references sibling types (`PRRecord`, `CIEvent`, `TeamConfig`, `SlackBlocks`) defined in `01-github-fetcher/INTERFACE.md` and `04-notification-router/INTERFACE.md`, three tasks have minor bugs in the written plan (wrong field name, ambiguous null handling, swapped return shape), and cross-node types need to be imported verbatim. Without skill: Claude batches tests into clusters, writes implementation before asserting failing test, fabricates cross-node types from memory when INTERFACE files aren't visible in the cwd, silently resolves plan bugs by "doing the obvious thing," commits occasionally rather than per-task.
+
+**GREEN expectation (with ultra-implementing-solo):** Claude runs strict per-task RED→GREEN cycles with mutation checks after each green, imports cross-node types verbatim via SHA-256-pinned copies, routes every plan divergence to a DIVERGENCE_LOG.md (amend-plan / interview-item / ADR routes), re-hashes sibling INTERFACE files before contract-test tasks, commits per task.
+
+**Test Results (2026-04-05, RED → GREEN):**
+
+| Dimension | Baseline (RED, no skill) | With ultra-implementing-solo (GREEN) |
+|---|---|---|
+| TDD cycle discipline | Batched tests written in clusters, implementation first-draft | Strict per-task RED → failing-test-run → GREEN → mutation-check, 13 tests, 9 task commits |
+| Cross-node type handling | Fabricated `PRRecord`/`CIEvent` shapes from memory; INTERFACE.md never opened | Verbatim import from sibling INTERFACE with SHA-256 prefix pinning; 4 hashes in header |
+| Plan-bug handling | Silently "fixed" — 3 bugs resolved without trace | 3 entries to DIVERGENCE_LOG.md: 2 routed to amend-plan (wrong field / swapped return), 1 routed to P1 interview (ambiguous null) |
+| Mutation checks | None — "green means done" | Per-task mutation tweak after each green: flip boolean, change literal, delete branch; failing-test verification before proceeding |
+| Commit granularity | End-of-session batch commit | 9 task-scoped commits, each with RED/GREEN marker + test count |
+| Freshness check | None | Pre-contract-test re-hash of sibling INTERFACE (compared to plan-header SHA); freshness confirmed before Task 8 contract smoke |
+| Interview wiring | Silent assumption on ambiguous null ("probably undefined") | Q001 filed to INTERVIEW_QUEUE.md with proposed default ("null means CI absent") + "Defaults in force" entry |
+| Test artifact shape | `test/` cluster files | Per-task files named for task ID, test count grows monotonically |
+| Error handling path | Generic `throw new Error(...)` wherever shadow used ADT | Honored shadow-code DigestError ADT; typed-error assertions per variant |
+| Contract smoke test | 1 improvised, invented consumer signature | 1 per consumer (04-notification-router), signature mirrored from pinned SHA |
+
+**Verdict:** GREEN passed. Skill materially forced: (1) per-task RED→GREEN cycles with mutation checks, catching a "always-passes" test in Task 4 RED would have shipped; (2) verbatim sibling-type imports via SHA-256 pinning, closing the "fabricated types" loophole the environment exposed (INTERFACE files not on disk in cwd); (3) DIVERGENCE_LOG.md routing with 3 structured entries versus RED's silent fixes, producing an auditable decision trail; (4) per-task commits providing bisect-friendly history; (5) freshness re-hash before contract-test tasks catching a sibling drift the plan header would have missed.
+
+**Refactor candidates (future, not blocking):**
+
+1. **Inline INTERFACE delivery dodges disk-open gate** — GREEN received sibling INTERFACE contents inline (env had no files), compensating via SHA pinning. Skill assumes sibling files are on disk; it should specify content-hash fallback for virtual deliveries and make the "open-from-disk" gate explicit.
+2. **tsc-as-RED-probe for type-only task** — Task 2 was pure type definitions; used `tsc` compilation as the failing "test," which works but blurs RED/GREEN semantics. Skill should explicitly bless compilation-as-RED for type-only tasks or require a runtime assertion even for type tasks.
+3. **DIVERGENCE_LOG routing is subjective** — amend-plan vs interview-item vs ADR routing was judgment-based. Skill should provide a decision tree (e.g., "affects sibling contract → amendment; user preference unknown → interview; local commitment with tradeoff → ADR").
+4. **Mutation check is one-shot** — single mutation per task may miss weak-test clusters. Skill could specify a minimum mutation set per function (e.g., flip boundaries, null-check, empty-input).
+5. **Commit message format not templated** — 9 commits varied in structure. Bake a convention (e.g., `[T<n>] <title> [RED/GREEN]`).
+6. **Freshness re-hash only pre-contract** — other tasks could silently consume stale sibling types. Skill should specify re-hash cadence (e.g., start-of-session + pre-contract-test).
+
+**Decision:** Ship MVP. Patch refactor candidates on ARGUS dogfood cycle.
+
+**Test artifacts:** `/tmp/ultra-implementing-solo-red/` (RED baseline), `/tmp/ultra-implementing-solo-green/` (GREEN verification).
+
+#### 16. ultra-implementing-team
+
+**Pressure scenario:** Dispatch 8 independent implementation tasks from a `team-dashboard` plan tree across parallel subagents, where tasks have interdependencies via sibling INTERFACE types, 3 tasks are good candidates for true parallelism, 2 must run sequentially after an anchor task, and review gates are needed at cohort boundaries. Without skill: Claude loads `superpowers:subagent-driven-development`, produces reasonable dispatch briefs, but pins against a moving HEAD, assumes worktree isolation is manual, lets subagents self-determine what to review, doesn't codify rollback tiers.
+
+**GREEN expectation (with ultra-implementing-team):** Claude executes all 12 procedure steps, produces `SESSION_STATE.md` with explicitly pinned SHAs for every dispatch, writes 8 dispatch briefs each with 6 required sections (context, scope, interfaces, acceptance, forbidden, handoff), codifies a two-stage review per task (self-review + sibling review), defines a three-tier rollback (revert-commit / revert-task / revert-cohort), writes HANDOFF.md with SHAs-built-against column, explicitly specs worktree isolation as a procedure step.
+
+**Test Results (2026-04-05, RED → GREEN dry-run):**
+
+| Dimension | Baseline (RED, no skill) | With ultra-implementing-team (GREEN) |
+|---|---|---|
+| Background skill loaded | superpowers:subagent-driven-development, inferred from task | Same foundation + all 12 ultra-implementing-team procedure steps executed |
+| Dispatch brief count | 8 briefs produced | 8 briefs produced, each with 6 required sections enforced |
+| SHA pinning | Noted "pin against HEAD" in prose | `SESSION_STATE.md` with explicit pinned SHAs for every sibling INTERFACE dispatched-against |
+| Parallelism plan | Flagged which tasks parallelizable in prose | Explicit parallelism DAG: 3 true-parallel cohort + 2 sequential + 3 chained-after-anchor |
+| Forbidden sections | Implicit ("don't touch other nodes") | Every brief has explicit "Forbidden" section listing out-of-scope files/types/nodes |
+| Review-gate structure | "Review before merge" mentioned | Two-stage per-task: self-review checklist + sibling-agent review, codified per brief |
+| Rollback strategy | Undefined | Three-tier: revert-commit / revert-task / revert-cohort with decision criteria |
+| Handoff document | Ad-hoc merge message | `HANDOFF.md` with task / owner / commits / SHAs-built-against / review-status columns |
+| Worktree isolation | Assumed user handles | Explicit procedure step: create worktree per subagent, named `wt-<task-id>` |
+| Session state persistence | Chat only | `SESSION_STATE.md` + `DIVERGENCE_LOG.md` + `REVIEW_GATES.md` + `HANDOFF.md` |
+
+**Verdict:** GREEN passed (dry-run, no live dispatch). Skill materially forced: (1) all 12 procedure steps with named artifacts preventing the "reasonable but ad-hoc" RED baseline; (2) SESSION_STATE.md with pinned SHAs per dispatch, closing the moving-HEAD loophole; (3) 6-section dispatch brief template including explicit Forbidden sections, catching out-of-scope drift before dispatch; (4) two-stage review codified per-task rather than per-cohort; (5) three-tier rollback with decision criteria, versus undefined RED strategy; (6) HANDOFF.md with SHAs-built-against column, making cross-task merge risk auditable; (7) worktree isolation promoted from assumption to procedure step.
+
+**Refactor candidates (future, not blocking):**
+
+1. **SHA pinning assumes git** — no content-hash fallback for non-git or virtual workspaces. Skill should specify sha256-of-file fallback when git refs unavailable.
+2. **Freshness re-check only before contract tests** — intermediate tasks could build against stale pinned SHAs if sibling work lands between dispatch and execution. Skill should specify pre-merge freshness re-hash cadence.
+3. **No commit-order TDD enforcement** — subagents receive briefs with acceptance criteria but skill doesn't mandate RED-commit-before-GREEN-commit shape (ultra-implementing-solo does). Promote TDD commit-order requirement into dispatch-brief template.
+4. **No cohort-close mini-review** — procedure has per-task review and pre-merge handoff, but no explicit cohort-boundary review gate (e.g., all 3 parallel tasks reviewed together for cross-consistency). Add as Step 10.5.
+5. **Cross-doc-review trigger threshold implicit** — skill mentions ultra-cross-doc-review as available prerequisite but doesn't specify when to fire (after N tasks? before every cohort?). Bake trigger threshold.
+6. **Dispatch-brief word budget unstated** — 8 briefs varied in length (observed range ~400-900w). Cap guidance would keep briefs scannable.
+
+**Decision:** Ship MVP. Patch refactor candidates on ARGUS dogfood cycle.
+
+**Test artifacts:** `/tmp/ultra-implementing-team-red/` (RED baseline dry-run), `/tmp/ultra-implementing-team-green/` (GREEN verification dry-run).
+
+#### 17. ultra-shadow-review
+
+**Pressure scenario:** Review a frozen planning-shadow for the `02-digest-generator/` leaf in a `team-dashboard` plan tree, where the SHADOW/ contains a `context()`-headed stub with a `DigestError` ADT, hash-pinned sibling imports, META.md claiming 22% token-ratio, and subtle architecture bugs (sibling INTERFACE absent on disk, MalformedTimestamp strict-blanks 9am digest, UnknownAuthor blanks on contractor/bot PRs). Without skill: Claude skims the shadow, flags obvious typos, treats arithmetic claims as trustworthy, reads dimensions in arbitrary order, conflates MAJOR concerns with BLOCKERs, emits verdict as loose prose.
+
+**GREEN expectation (with ultra-shadow-review):** Claude walks the 9-dimension checklist in strict order, recomputes META's token arithmetic, forces hash-verification against sibling INTERFACE on disk, surfaces architecture-level anchor-fit bugs as BLOCKERs (not questions), writes test-sketch TDD hooks for each BLOCKER, and emits a `REVIEW_<YYYY-MM-DD>.md` with verdict `FREEZE | REVISE | ESCALATE`.
+
+**Test Results (2026-04-05, RED → GREEN):**
+
+| Dimension | RED | GREEN |
+|---|---|---|
+| Output shape | Loose prose review, no filename convention | `REVIEW_2026-04-05.md` with verdict `FREEZE \| REVISE \| ESCALATE` |
+| Dimension ordering | Arbitrary — skipped around | Strict 9-dimension walk: purity → types → errors → dataflow → anchor-fit → invariants → provenance → downstream → tokens |
+| Hash verification | Trusted `@hash:` pins as documentation | Forced hash recompute; sibling INTERFACE absent on disk flagged as B1 BLOCKER |
+| Arithmetic checking | Trusted META's "22% ratio" claim | Recomputed: 8017/4 = 2004 shadow tokens, 22%, matches META — token dimension clean |
+| Anchor-fit walkthrough | Not performed | Walked concrete inputs through shadow; surfaced B2 (strict MalformedTimestamp blanks 9am digest) + B3 (UnknownAuthor blanks on contractor/bot PRs) |
+| Severity discipline | Conflated MAJOR with BLOCKER ("this seems wrong") | B2/B3 classified BLOCKER (architecture wrong for real traffic), not questions |
+| Finding tally | 4 unstructured concerns | 3 BLOCKERs / 4 MAJORs / 3 MINORs, with M1/m1 types, M2/m2 errors, M3 invariants, M4 downstream |
+| P0 routing | None — findings lived in review only | P0 promotions B1/B2/B3 filed to `INTERVIEW_QUEUE.md` immediately |
+| Test-sketch hooks | Absent | TDD test-sketch attached to every BLOCKER (B1/B2/B3) for downstream fix cycle |
+| Verdict form | "Looks mostly fine, a few issues" | `REVISE — fixes B1/B2/B3 required before refreeze` |
+
+**Verdict:** GREEN passed. Skill materially forced: (1) strict 9-dimension ordering preventing reviewer from settling on easy wins and skipping architecture-level checks; (2) hash-verification-as-gate catching sibling INTERFACE-absent-on-disk as B1 BLOCKER, where RED trusted the `@hash:` prose; (3) arithmetic token-ratio recomputation (8017/4 = 2004, 22%) validating META rather than trusting it; (4) anchor-path walkthrough surfacing B2/B3 anchor-fit BLOCKERs that are invisible without concrete traffic shapes; (5) severity-tier discipline distinguishing "wrong for production" (BLOCKER) from "wrong in theory" (MAJOR); (6) test-sketch TDD hooks per BLOCKER creating mechanical fix handoff; (7) verdict vocabulary `FREEZE | REVISE | ESCALATE` binding each outcome to a concrete next action.
+
+**Refactor candidates (future, not blocking):**
+
+1. **Vocabulary drift with SHADOW_SPEC §6** — skill uses `REVIEW_<YYYY-MM-DD>.md` + `FREEZE/REVISE/ESCALATE` but spec used `SHADOW_REVIEW.md` + `PASS/ITERATE/BLOCKED`. RESOLVED: spec patched to match skill this session.
+2. **Step 2 — "sibling INTERFACE absent on disk"** — hash-verify step assumes sibling files exist; skill should handle absent-sibling case explicitly (virtual delivery fallback, or hard-stop with guidance).
+3. **Example shadow wrapper mismatch** — SHADOW_SPEC §5 example uses a slightly different wrapper shape than the skill's expectation around `context()` ordering; clarify which is canonical.
+4. **"MAJOR deemed blocking" criterion** — skill allows MAJORs to promote to BLOCKER under reviewer judgment; tighten the promotion criterion (e.g., "affects >20% of expected traffic shapes").
+5. **META.md schema undeclared in SHADOW_SPEC** — skill reads META fields (`shadow_tokens`, `estimated_real_tokens`, `ratio`, reviewer-hooks, tiered questions) but spec doesn't formally declare schema. Add META schema to SHADOW_SPEC.
+6. **Hash algorithm unspecified for `@hash:` pins** — skill verifies pins but SHADOW_SPEC doesn't pin the algorithm (SHA-256? short commit? mtime?). Specify in spec.
+
+**Decision:** Ship MVP. Pending suite-level dogfood review.
+
+**Test artifacts:** `/tmp/ultra-shadow-review-green/REVIEW_2026-04-05.md`, `/tmp/ultra-shadow-review-green/INTERVIEW_QUEUE.md`, `/tmp/ultra-shadow-review-green/APPROACH.md`.
+
+#### 18. ultra-shadow-drift
+
+**Pressure scenario:** Drift-audit a frozen planning-shadow against diverged real code at `/tmp/ultra-shadow-drift-green/`, where 10 seeded drifts span all 7 dimensions (including a test-complicit test file that drifted alongside the implementation). Without skill: Claude eyeballs the diff, produces an unstructured bug list, and misses the test-complicity signal.
+
+**GREEN expectation (with ultra-shadow-drift):** Claude walks the 8-step procedure in strict order, checks all 7 dimensions, classifies every drift into one of 4 categories (BUG / SHADOW-UPDATE / ACCEPTABLE-EVOLUTION / FEATURE-DROPPED), computes priority via severity × inverse-effort with test-complicit auto-bump, and emits DRIFT_REPORT + DRIFT_FIX_TASKS + DECISIONS artifacts with a drift-rate rollup metric.
+
+**Test Results (2026-04-05, RED → GREEN):**
+
+| Dimension | RED | GREEN |
+|---|---|---|
+| Output shape | Unstructured bug list in prose | `DRIFT_REPORT_2026-04-05.md` + `DRIFT_FIX_TASKS.md` + `DECISIONS.md` with ADR stubs |
+| Procedure discipline | Ad-hoc diff eyeballing | Forced 8-step walk; all 10 seeded drifts caught |
+| Dimension coverage | Scattered, skipped some | 7 dimensions walked in strict order |
+| Classification | Everything labeled "bug" | 4 BUG + 2 SHADOW-UPDATE + 2 ACCEPTABLE-EVOLUTION + 2 FEATURE-DROPPED |
+| Priority formula | Gut-feel ordering | severity × inverse-effort with test-complicit auto-bump; BUG-01 (return-type narrowing) ranked top |
+| Test-complicit detection | Missed — test file drift treated as normal update | Flagged and auto-bumped on priority |
+| Drift-rate rollup | Absent | 10/20 surface items = 50%, INVESTIGATE band (>25%) |
+| Downstream handoff | Report only, no task list | DRIFT_FIX_TASKS.md generated, DECISIONS.md ADR stubs for SHADOW-UPDATEs |
+| Regen recommendation | Not surfaced | ultra-shadow-regen recommended for the 2 SHADOW-UPDATE cases |
+| Verdict form | "Code has drifted a lot" | Structured: 4 bugs to fix, 2 shadow updates, 2 accepted, 2 features dropped |
+
+**Verdict:** GREEN passed. Skill materially forced: (1) 8-step procedure caught all 10 seeded drifts where RED would eyeball and miss; (2) 7-dimension checklist ensured no dimension silently skipped; (3) 4-category classification converted ambiguous "this differs" observations into actionable dispositions; (4) priority formula (severity × inverse-effort) produced a defensible top-of-queue ordering placing BUG-01 return-type narrowing first; (5) test-complicit auto-bump surfaced the test-file-drifted-with-implementation signal as a priority multiplier; (6) drift-rate rollup (50% INVESTIGATE band) gave a single metric that generalizes across audits; (7) downstream artifact chain (REPORT → FIX_TASKS → DECISIONS + regen recommendation) created mechanical handoff to fixers, updaters, and ADR writers.
+
+**Refactor candidates (future, not blocking):**
+
+1. **Step 4 sibling re-hash has no escape hatch** — when sibling tree doesn't exist (isolated scenarios), the re-hash step hangs without guidance.
+2. **Shadow placeholder classification missing** — `// ...` shadow placeholders vs. real-code concrete algorithm has no explicit classification guidance.
+3. **Cross-linked/contingent decisions** — no explicit handling of decisions that depend on each other (e.g., FEATURE-DROPPED contingent on BUG resolution).
+4. **"New private helpers not in shadow" undefined** — only "dead exports are a tell" is mentioned; new internal helpers need a classification hook.
+5. **Drift-rate banding depends on denominator** — <10%/10-25%/>25% bands could note that symbol-count choice materially affects the ratio.
+6. **Auto-bump stacking unclear** — rule doesn't clarify whether test-complicit + other multipliers stack additively, multiplicatively, or saturate.
+
+**Decision:** Ship MVP. Pending suite-level dogfood review.
+
+**Test artifacts:** `/tmp/ultra-shadow-drift-green/DRIFT_REPORT_2026-04-05.md`, `/tmp/ultra-shadow-drift-green/DRIFT_FIX_TASKS.md`, `/tmp/ultra-shadow-drift-green/DECISIONS.md`.
+
+#### 19. ultra-shadow-regen
+
+**Pressure scenario:** Regenerate a frozen shadow from diverged real code at `/tmp/ultra-shadow-regen-green/` (pr-fetcher module, 6-7 functions, FetchError ADT, hash-pinned sibling imports, 4 open planning questions) where real code has drifted in types, signatures, error-handling, dataflow, cross-module wiring, and Q-disposition. Without skill: Claude co-locates regen output next to the frozen shadow (clobbering), editorializes classification with judgement language, and misses the planning-question-disposition axis entirely.
+
+**GREEN expectation (with ultra-shadow-regen):** Claude executes the 9-step procedure, holds `SHADOW_CURRENT/` as the output path (never writes into `SHADOW/`), covers all 5 SHADOW_DIVERGENCE axes including planning-question-disposition, tags every delta with `[+]/[-]/[~]`, enforces the density-check band, and uses neutral disposition language (not "regression").
+
+**Test Results (2026-04-05, RED → GREEN):**
+
+| Dimension | RED | GREEN |
+|---|---|---|
+| Output shape | Clobbered `SHADOW/` or co-located next to frozen | `SHADOW_CURRENT/pr-fetcher.shadow.ts` + `SHADOW_DIVERGENCE.md`, held separate from frozen `SHADOW/` |
+| Procedure discipline | Ad-hoc regeneration from real code | 9-step procedure executed in order |
+| Density check | Unmeasured or rationalized | 119% (809 → 963 tokens), within ±20% at upper edge, flagged not padded |
+| Axis coverage | 3-4 axes touched loosely | All 5 axes covered: types, signatures, errors, dataflow, cross-module |
+| Q-disposition as dedicated axis | Merged into other axes or skipped | Dedicated axis caught Q3 "resolved-by-removal" invisible to other axes |
+| Delta tagging | Prose descriptions only | Every delta tagged with `[+]/[-]/[~]` legend |
+| Judgement-language guard | "Regression", "broken" phrasing | Used `disposition: resolved-by-removal` — neutral framing held |
+| Output-path discipline | Wrote into `SHADOW/` (destructive) | Held `SHADOW_CURRENT/` — resisted clobbering frozen artifact |
+| Step 9 ROOT.md append | Attempted write to missing file | Flagged N/A for isolated scenario (no ROOT.md present) |
+| Verdict form | "Here's the new shadow" | Structured divergence report across 5 axes with neutral dispositions |
+
+**Verdict:** GREEN passed. Skill materially forced: (1) `SHADOW_CURRENT/` output-path discipline held against the natural pull to overwrite `SHADOW/`, preserving the frozen baseline needed for diff audit; (2) density check (119%, 809→963 tokens) surfaced the band edge rather than silently padding or truncating; (3) 5-axis coverage with planning-question-disposition as a dedicated axis caught Q3 resolved-by-removal, a class of drift invisible to the other four axes; (4) `[+]/[-]/[~]` delta legend converted prose deltas into scannable structured rows; (5) judgement-language guard held — neutral `disposition: resolved-by-removal` instead of loaded "regression" framing; (6) Step 9 ROOT.md escape path worked (flagged N/A for isolated scenario without faking output); (7) the resulting SHADOW_DIVERGENCE.md is directly consumable by ultra-shadow-drift as a companion audit artifact.
+
+**Refactor candidates (future, not blocking):**
+
+1. **Density band rationalizable at upper edge** — "within ±20%" could rationalize 119.99% as compliant; tighten to dual-band (≥110% yellow, ±20% red).
+2. **Step 9 ROOT.md append needs explicit N/A escape hatch** — isolated regen scenarios (no ROOT.md) need documented skip path.
+3. **Sibling-hash drift placement ambiguous** — axis 5 (module structure) vs. a dedicated cross-module-boundary axis is unresolved.
+4. **`[=]` (unchanged) marker improvised** — used for row-density during testing; either adopt in legend or explicitly forbid.
+5. **Q-disposition category boundary subjective** — "resolved-by-removal" vs. "still-open" hinges on reviewer judgment at the edge.
+6. **No default section for "things shadow didn't promise but real code added"** — private helpers, new ADT variants land in axis 2 by default; could warrant a named section.
+
+**Decision:** Ship MVP. Pending suite-level dogfood review.
+
+**Test artifacts:** `/tmp/ultra-shadow-regen-green/SHADOW_CURRENT/pr-fetcher.shadow.ts`, `/tmp/ultra-shadow-regen-green/SHADOW_DIVERGENCE.md`.
 
 ---
 

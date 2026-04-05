@@ -103,8 +103,8 @@ What a reviewer catches from this ~30 lines: every error case named with payload
 ```
 ultra-shadow-code   → writes SHADOW/ (STATUS: planning)
   ↓
-ultra-shadow-review → emits SHADOW_REVIEW.md (PASS | ITERATE | BLOCKED)
-  ↓ iterate until PASS
+ultra-shadow-review → emits REVIEW_<YYYY-MM-DD>.md (FREEZE | REVISE | ESCALATE)
+  ↓ iterate until FREEZE
 FREEZE              → STATUS: frozen in SHADOW/META.md (Phase 5.5 gate)
   ↓
 real-code gen       → reads frozen shadow as design input
@@ -132,3 +132,7 @@ ultra-shadow-regen  → derives current-shadow on demand for queries
 - `research/shadow-code/INTEGRATION_IDEAS.md` — 4-skill family design rationale.
 - `research/shadow-code/FORMAT_COMPARISON.md` — format matrix and worked example.
 - `research/shadow-code/LIFECYCLE.md` — L1-L4 pattern analysis and default policy.
+
+## Inspired by
+
+Inspired by [adifyr/shadow-code](https://github.com/adifyr/shadow-code) (GPL-3.0, v0.7.4, ~70 stars) — a VS Code extension that pioneered the core Pattern A idea of a lightweight typed architecture spec between planning docs and real code. We borrowed that idea and decoupled it from the editor-extension context, adapting it into a skill-orchestrated lifecycle (planning → frozen → graduated) with review, drift-check, and regen siblings.

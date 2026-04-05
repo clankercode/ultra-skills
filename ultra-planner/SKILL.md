@@ -59,6 +59,7 @@ For each phase, dispatch to a skill. Ultra-* sub-skills are preferred; fall back
 
 | Phase | Ultra skill (preferred) | Fallback |
 |---|---|---|
+| Bootstrap from a single-file seed plan (Claude/Codex output, hand-written markdown) — produces tree skeleton, ORIGIN.md audit trail, augmented INTERVIEW_QUEUE, then hands back at Phase 2 or 3 | `ultra-plan-from-seed` | Inline prose-to-tree conversion (loses ORIGIN.md audit, ADR fidelity check, scope-tier splitting, interview-queue augmentation, CHILDREN.md coverage matrix) |
 | Decompose node | `ultra-decomposing` | Inline reasoning + superpowers:brainstorming for node SPEC |
 | Research | `ultra-plan-research` | superpowers:dispatching-parallel-agents |
 | Tree review | `ultra-cross-doc-review` | superpowers:requesting-code-review pattern |
@@ -67,6 +68,8 @@ For each phase, dispatch to a skill. Ultra-* sub-skills are preferred; fall back
 | Leaf-node plan writing (Phase 5) | `ultra-writing-plans` | superpowers:writing-plans |
 | Phase 5.5 — Shadow generation | `ultra-shadow-code` | Skip; proceed directly to implementation (loses architecture-review gate) |
 | Phase 5.5b — Shadow review | `ultra-shadow-review` | Skip-then-freeze (loses cheap-layer bug catch); or inline ad-hoc review |
+| Post-implementation drift check — real code vs. frozen shadow, classified + prioritized | `ultra-shadow-drift` | Ad-hoc diff + eyeballed drift notes (loses classification, rollup metrics, test-complicity flag) |
+| Shadow regeneration (L3) — derive current-shadow from real code + emit SHADOW_DIVERGENCE.md | `ultra-shadow-regen` | Manual re-derivation of shadow from code; hand-written divergence notes |
 | Leaf implementation (solo mode, no subagent dispatch) | `ultra-implementing-solo` | superpowers:test-driven-development inline |
 | Leaf implementation (team mode, leader + dispatched workers) | `ultra-implementing-team` | superpowers:subagent-driven-development |
 | Artifact generation (Phase 4) | `ultra-design-artifacts` | Inline graphviz/mermaid |

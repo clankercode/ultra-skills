@@ -162,6 +162,7 @@ Reviews write findings to `REVIEW_<YYYY-MM-DD>_<type>.md` at the tree level, not
 | Skill | Role | Status |
 |---|---|---|
 | `ultra-planner` | Orchestrator. Entry point. Manages tree & session state. | MVP target |
+| `ultra-plan-from-seed` | Bootstraps a plan tree from a single-file seed plan (Claude/Codex output, hand-written markdown); hands off to ultra-planner at Phase 2 or Phase 3. | done (MVP) pending GREEN |
 | `ultra-decomposing` | Recursive breakdown with interface contracts. | done (MVP) |
 | `ultra-plan-research` | Parallel research dispatch + synthesis into RESEARCH_LOG. | done (MVP) |
 | `ultra-cross-doc-review` | Consistency/architecture passes across tree. | done (MVP) |
@@ -170,7 +171,7 @@ Reviews write findings to `REVIEW_<YYYY-MM-DD>_<type>.md` at the tree level, not
 | `ultra-design-artifacts` | Diagrams, SVGs, mockups, demos for iteration. | done (MVP) pending GREEN |
 | `ultra-writing-plans` | Hierarchical-aware plan writer (leaf-node PLAN.md). | done (MVP) pending GREEN |
 | `ultra-writing-skills` | Ultra's own skill-authoring discipline (for suite self-modification). | done (MVP) |
-| `ultra-reviewer` | Meta: reviews ultra-* skills (individually or as a family) against a 9-dimension checklist, triages BLOCKER/MAJOR/MINOR. | done (MVP) pending GREEN |
+| `ultra-reviewer` | Meta: reviews ultra-* skills (individually or as a family) against an 11-dimension checklist, triages BLOCKER/MAJOR/MINOR. | done (MVP) pending GREEN |
 | `ultra-context-hygiene` | Cross-cutting: context-as-budget discipline referenced by every dispatching skill. | done (MVP) |
 | `ultra-yagni` | Cross-cutting: reactive YAGNI lens for flagging speculative scope in in-progress artifacts (tells + tiering + ripple-check). | done (MVP) pending GREEN |
 | `ultra-index` | Reference: symptom-to-skill routing guide for the ultra-* suite (inverse of ultra-planner's dispatch table). | done (MVP) pending GREEN |
@@ -190,8 +191,8 @@ Reviews write findings to `REVIEW_<YYYY-MM-DD>_<type>.md` at the tree level, not
 |---|---|---|
 | `ultra-shadow-code` | Generates planning-shadow for a leaf node (TypeScript-like + ADT). | done (MVP) pending GREEN |
 | `ultra-shadow-review` | Architecture review of SHADOW/; emits FREEZE/REVISE/ESCALATE. | done (MVP) pending GREEN |
-| `ultra-shadow-drift` | Post-implementation drift check: real code vs. frozen shadow. | planned |
-| `ultra-shadow-regen` | Derives current-shadow from real code on demand (gitignored cache). | planned |
+| `ultra-shadow-drift` | Post-implementation drift check: real code vs. frozen shadow. | done (MVP) pending GREEN |
+| `ultra-shadow-regen` | Derives current-shadow from real code on demand; emits SHADOW_DIVERGENCE.md (raw 5-axis deltas, no classification). | done (MVP) pending GREEN |
 
 **Phase 1 (MVP, this repo):** ultra-planner only. Callable as a thin orchestrator that:
 1. Recognizes when it applies (user describes a large multi-component system)

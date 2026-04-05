@@ -13,6 +13,7 @@ A skill suite for **hierarchical, multi-document planning** of systems too large
 | Skill | Status |
 |---|---|
 | `ultra-planner` | **MVP verified via TDD baseline (RED → GREEN passed)** |
+| `ultra-plan-from-seed` | done (MVP) pending GREEN |
 | `ultra-decomposing` | done (MVP) |
 | `ultra-plan-research` | done (MVP) |
 | `ultra-cross-doc-review` | done (MVP) |
@@ -29,6 +30,8 @@ A skill suite for **hierarchical, multi-document planning** of systems too large
 | `ultra-implementing-team` | done (MVP) pending GREEN |
 | `ultra-shadow-code` | done (MVP) pending GREEN |
 | `ultra-shadow-review` | done (MVP) pending GREEN |
+| `ultra-shadow-drift` | done (MVP) pending GREEN |
+| `ultra-shadow-regen` | done (MVP) pending GREEN |
 
 ## Key Docs
 

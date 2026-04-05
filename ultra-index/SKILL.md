@@ -24,6 +24,7 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 | Symptom / Situation | Skill | Phase |
 |---|---|---|
 | Starting a multi-subsystem / platform / product plan from scratch | `ultra-planner` | Bootstrap |
+| Seeding a plan tree from an existing single-file markdown plan (Claude/Codex output, hand-written architecture doc) | `ultra-plan-from-seed` | Bootstrap |
 | Need to break an oversized node into child nodes with contracts | `ultra-decomposing` | Decompose |
 | Parent SPEC has 6+ responsibilities or expected >15 leaf tasks | `ultra-decomposing` | Decompose |
 | Need to compare 2+ tech/library/service candidates with citations | `ultra-plan-research` | Research |
@@ -40,13 +41,14 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 | Writing a leaf-node PLAN.md with sibling contract dependencies | `ultra-writing-plans` | Plan |
 | File >1MB, same dataset queried 2+ times, or 3+ data-passing steps | `ultra-context-hygiene` | Cross-cutting lens |
 | Creating or editing an ultra-* SKILL.md | `ultra-writing-skills` | Meta |
-| Reviewing a new or shipped ultra-* skill against the 9-dimension checklist | `ultra-reviewer` | Meta |
+| Reviewing a new or shipped ultra-* skill against the 11-dimension checklist | `ultra-reviewer` | Meta |
 | Uncertain which skill to use / onboarding to the suite | `ultra-index` | Reference |
 
 ## Skill catalog (by phase)
 
 **Bootstrap / Orchestration**
 - `ultra-planner` — Entry point for multi-subsystem plans. Maintains the plan tree, SESSION.md, phase dispatching.
+- `ultra-plan-from-seed` — Alternative entry point. Converts a single-file seed plan into a tree bootstrap (PRODUCT_GOALS, node SPEC/INTERFACE stubs, DECISIONS, INTERVIEW_QUEUE, artifacts/ORIGIN.md), then hands off to ultra-planner at Phase 2 (refinement) or Phase 3 (scope-pruning).
 
 **Decompose**
 - `ultra-decomposing` — Splits oversized nodes into children with coverage matrix, non-overlap assertion, and DAG validation.
@@ -71,7 +73,7 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 
 **Meta (suite self-modification)**
 - `ultra-writing-skills` — TDD-for-skills authoring, orchestration pressure scenarios, ecosystem registration.
-- `ultra-reviewer` — 9-dimension review of ultra-* skill(s) with BLOCKER/MAJOR/MINOR triage.
+- `ultra-reviewer` — 11-dimension review of ultra-* skill(s) with BLOCKER/MAJOR/MINOR triage.
 - `ultra-index` — This skill. Symptom-to-skill routing guide.
 
 **Cross-cutting lenses (layered onto other phases)**
@@ -88,14 +90,15 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 
 **ultra-writing-skills** — any new or edited `ultra-<name>/SKILL.md`. Invoke before drafting; it carries the RED/GREEN discipline and ecosystem-update checklist.
 
-**ultra-reviewer** — before shipping a new ultra-* skill, when a family of 2+ skills lands together, or for periodic audit. It loads calibration skills and walks a fixed 9-dimension checklist. Pairs with `ultra-cross-doc-review` (which reviews plan trees rather than skills).
+**ultra-reviewer** — before shipping a new ultra-* skill, when a family of 2+ skills lands together, or for periodic audit. It loads calibration skills and walks a fixed 11-dimension checklist. Pairs with `ultra-cross-doc-review` (which reviews plan trees rather than skills).
 
 ## Common chains
 
-1. **decompose → cross-doc-review → scope-prune → interview** — grow the tree, check coherence, cut scope, queue residual ambiguities.
-2. **plan-research → cross-doc-review → writing-plans** — research commits a tech choice, review confirms contracts still fit, leaf plan cites the INTERFACE paths.
-3. **writing-skills → reviewer → ecosystem updates** — draft with RED/GREEN, review against 9 dimensions, update DESIGN.md + README + planner dispatch table in the same commit.
-4. **decompose → yagni lens → cross-doc-review** — flag speculative plurality and infra weight in new SPEC/INTERFACE before the tree-review pass runs.
+1. **plan-from-seed → cross-doc-review → scope-prune (if scope-tiered) → decompose** — bootstrap a tree from prose, check coherence, prune tiers, decompose fat nodes.
+2. **decompose → cross-doc-review → scope-prune → interview** — grow the tree, check coherence, cut scope, queue residual ambiguities.
+3. **plan-research → cross-doc-review → writing-plans** — research commits a tech choice, review confirms contracts still fit, leaf plan cites the INTERFACE paths.
+4. **writing-skills → reviewer → ecosystem updates** — draft with RED/GREEN, review against 11 dimensions, update DESIGN.md + README + planner dispatch table in the same commit.
+5. **decompose → yagni lens → cross-doc-review** — flag speculative plurality and infra weight in new SPEC/INTERFACE before the tree-review pass runs.
 
 ## Reference
 
