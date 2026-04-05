@@ -95,5 +95,5 @@ Checklist: naming, interface-fit, cycles, missing-docs, types, overlap, public-i
 - **Timestamp collision:** date-only filename overwrites prior reviews. Use `YYYY-MM-DD-HHMM`.
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

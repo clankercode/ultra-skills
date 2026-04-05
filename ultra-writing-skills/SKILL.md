@@ -73,5 +73,5 @@ Operate in order. Do not batch or skip.
 - **Workflow-in-description:** description becomes a shortcut and agents follow it instead of reading the body.
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

@@ -124,5 +124,5 @@ Complicit tests auto-bump one severity tier in `ultra-shadow-drift` drift report
 - `superpowers:test-driven-development` — parent discipline; `testing-anti-patterns.md` (in that skill's dir) covers mock-behavior anti-patterns in more depth.
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

@@ -81,5 +81,5 @@ Operate in order. Do not skip calibration or the dimension walk.
 - **In-chat review:** REVIEW.md on disk is the artifact; without it there is nothing to diff against.
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

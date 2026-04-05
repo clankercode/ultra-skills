@@ -73,5 +73,5 @@ Operate on the plan tree root. Do not skip or reorder steps 1-2.
 - **No ADR trail:** cuts discussed in chat but not written to DECISIONS.md. Next session, the same features re-accumulate.
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

@@ -89,5 +89,5 @@ Ids are monotonic (`Q001`, `Q002`, ...). Never reuse or renumber.
 - **Exact-string dedup:** "which DB?" and "pick a datastore" are the same item — merge semantically.
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

@@ -70,5 +70,5 @@ STOP and self-correct if any occur:
 - **Over-decomposition:** creating children that each hold <5 tasks. Merge back.
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

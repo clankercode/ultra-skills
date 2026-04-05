@@ -82,5 +82,5 @@ Default: push one level outward from where you instinctively reached.
 - **Reflexive Bash:** Bash feels fast but often returns more bytes than Grep/Glob with `count`/`head_limit`. Pick the narrower tool.
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

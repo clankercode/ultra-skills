@@ -75,5 +75,5 @@ Operate on a leaf node path `nodes/<path>/`. Do not skip or reorder.
 - **Extending without loading:** reading `superpowers:writing-plans` as reference instead of invoking it as a skill. The base disciplines need to be active, not summarised.
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

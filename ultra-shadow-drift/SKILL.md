@@ -89,5 +89,5 @@ Operate on a leaf node at `nodes/<leaf>/` with a `SHADOW/` dir and real code in 
 - `ultra-skills/research/shadow-code/LIFECYCLE.md` — L3 regen vs L4 graduation rationale; why frozen shadows are terminal.
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

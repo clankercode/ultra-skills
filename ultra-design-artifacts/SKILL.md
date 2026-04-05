@@ -85,5 +85,5 @@ Operate against a plan-tree root `docs/ultra-plans/<slug>/`. Do not skip or reor
 - **UI-mockup gate ignored:** producing mockups for every node, or none. The gate is "does SPEC describe a user-facing surface?"
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

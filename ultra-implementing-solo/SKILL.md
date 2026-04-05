@@ -79,5 +79,5 @@ Operate on leaf node path `nodes/<path>/` with PLAN.md present. Do not skip or r
 - **Subagent-language contamination:** thinking "I'll dispatch a reviewer" when you are the executor AND reviewer. The procedure's discipline replaces the missing second pair of eyes.
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

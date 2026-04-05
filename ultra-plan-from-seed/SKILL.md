@@ -104,5 +104,5 @@ Operate on a seed file path provided by the user or dispatcher. Target tree root
 - `ultra-skills/docs/DESIGN.md` §Plan Tree Directory Model — canonical tree shape.
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

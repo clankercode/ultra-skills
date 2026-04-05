@@ -115,5 +115,5 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 - `ultra-skills/README.md` — status table for each skill (MVP / pending GREEN / done).
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```

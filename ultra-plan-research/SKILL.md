@@ -84,5 +84,5 @@ Operate on plan tree root `docs/ultra-plans/<project>/`. Append to `RESEARCH_LOG
 - **Orphan entry:** RESEARCH_LOG.md grows but no SPEC.md or DECISIONS.md links back — the finding is invisible to the nodes that need it.
 
 ```!
-[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'
 ```
