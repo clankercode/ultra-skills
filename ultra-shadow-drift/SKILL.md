@@ -87,3 +87,7 @@ Operate on a leaf node at `nodes/<leaf>/` with a `SHADOW/` dir and real code in 
 - `ultra-skills/ultra-implementing-solo/SKILL.md` and `ultra-skills/ultra-implementing-team/SKILL.md` — upstream executors that produce the real code this skill checks; both dispatch `ultra-shadow-drift` post-implementation when they consumed a frozen SHADOW/.
 - `ultra-skills/ultra-cross-doc-review/SKILL.md` — BLOCKER/MAJOR/MINOR triage pattern this skill adapts.
 - `ultra-skills/research/shadow-code/LIFECYCLE.md` — L3 regen vs L4 graduation rationale; why frozen shadows are terminal.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

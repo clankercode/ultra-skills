@@ -71,3 +71,7 @@ Invoke ultra-yagni as a lens pass from:
 - `ultra-writing-plans` — on draft PLAN.md before finalizing tasks
 - `ultra-cross-doc-review` — as one review dimension across the tree
 - `ultra-writing-skills` — on SKILL.md drafts that list capabilities/options
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

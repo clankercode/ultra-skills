@@ -71,3 +71,7 @@ Operate in order. Do not batch or skip.
 - **Proxy testing:** verifying scripts/templates the skill references instead of the SKILL.md's teaching applied by a subagent. The SKILL.md is what is under test.
 - **Orphan / dispatch mismatch:** skill lands without catalog, README, BUILD_PLAN, or planner updates — or exists with no planner phase invoking it. Rescope or update the planner; do not ship out of sync.
 - **Workflow-in-description:** description becomes a shortcut and agents follow it instead of reading the body.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

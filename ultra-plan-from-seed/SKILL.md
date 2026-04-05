@@ -102,3 +102,7 @@ Operate on a seed file path provided by the user or dispatcher. Target tree root
 - `ultra-writing-plans/SKILL.md` — cross-node INTERFACE discipline; consulted later for leaf PLAN.md files.
 - `ultra-cross-doc-review/SKILL.md` — full review pass; planner's first post-handoff action.
 - `ultra-skills/docs/DESIGN.md` §Plan Tree Directory Model — canonical tree shape.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

@@ -100,3 +100,7 @@ Operate on a leaf node path `nodes/<leaf>/`. Do not skip or reorder.
 - `ultra-skills/research/shadow-code/LIFECYCLE.md` — L3 regen-on-demand policy rationale.
 - `ultra-skills/ultra-shadow-code/SKILL.md` — produces the planning-shadow you diff against.
 - `ultra-skills/ultra-shadow-drift/SKILL.md` — classifies the deltas you derive (downstream consumer).
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

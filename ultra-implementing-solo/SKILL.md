@@ -77,3 +77,7 @@ Operate on leaf node path `nodes/<path>/` with PLAN.md present. Do not skip or r
 - **No session state:** treating the in-memory plan as state. Solo executors get interrupted; SESSION.md is the resume point.
 - **Skipping the freshness check:** pinning siblings once but never re-verifying before contract tests. The sibling might have shipped mid-execution.
 - **Subagent-language contamination:** thinking "I'll dispatch a reviewer" when you are the executor AND reviewer. The procedure's discipline replaces the missing second pair of eyes.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

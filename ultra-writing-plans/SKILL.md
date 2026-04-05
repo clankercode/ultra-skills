@@ -73,3 +73,7 @@ Operate on a leaf node path `nodes/<path>/`. Do not skip or reorder.
 - **Contract-test-as-afterthought:** one integration test with self-chosen shapes, instead of per-consumer tests matching the consumer's exact signature.
 - **No sibling citations:** referencing types without noting source INTERFACE.md — audit-hostile.
 - **Extending without loading:** reading `superpowers:writing-plans` as reference instead of invoking it as a skill. The base disciplines need to be active, not summarised.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

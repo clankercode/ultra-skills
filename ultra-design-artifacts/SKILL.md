@@ -83,3 +83,7 @@ Operate against a plan-tree root `docs/ultra-plans/<slug>/`. Do not skip or reor
 - **Orphaned artifacts:** writing files under `artifacts/` without linking from ROOT.md. Reviewers will not find them.
 - **Everything-in-one-diagram:** cramming architecture + sequences + types into one mermaid. Canonical set exists because each view answers a different reviewer question.
 - **UI-mockup gate ignored:** producing mockups for every node, or none. The gate is "does SPEC describe a user-facing surface?"
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

@@ -71,3 +71,7 @@ Operate on the plan tree root. Do not skip or reorder steps 1-2.
 - **Verdict without rationale:** CUT/KEEP tags with no sentence. A future reader will reverse the call.
 - **DEFER as a hiding place:** marking everything DEFER to avoid conflict. DEFER needs a named revive trigger; without one, it is CUT.
 - **No ADR trail:** cuts discussed in chat but not written to DECISIONS.md. Next session, the same features re-accumulate.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

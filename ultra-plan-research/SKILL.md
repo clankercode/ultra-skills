@@ -82,3 +82,7 @@ Operate on plan tree root `docs/ultra-plans/<project>/`. Append to `RESEARCH_LOG
 - **Winner-only writeup:** describing only the recommended option. The log needs to show what was rejected and why, so later readers can re-evaluate when constraints change.
 - **Citation theater:** linking a vendor homepage as "source" for a scale claim. Cite the specific doc page, changelog, or post-mortem that carries the claim.
 - **Orphan entry:** RESEARCH_LOG.md grows but no SPEC.md or DECISIONS.md links back — the finding is invisible to the nodes that need it.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

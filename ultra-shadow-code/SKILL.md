@@ -102,3 +102,7 @@ Operate on a leaf node path `nodes/<path>/`. Do not skip or reorder.
 - `ultra-skills/research/shadow-code/FORMAT_COMPARISON.md` — format matrix + worked example.
 - `ultra-skills/research/shadow-code/LIFECYCLE.md` — L3+L4 policy rationale.
 - `ultra-skills/research/shadow-code/INTEGRATION_IDEAS.md` — 4-skill family context.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

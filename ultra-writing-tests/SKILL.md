@@ -122,3 +122,7 @@ Complicit tests auto-bump one severity tier in `ultra-shadow-drift` drift report
 - `ultra-implementing-solo` — solo executor that dispatches RED tests per task; load this skill at test-writing time.
 - `ultra-implementing-team` — leader + workers; workers should load this skill when their brief is to write a test.
 - `superpowers:test-driven-development` — parent discipline; `testing-anti-patterns.md` (in that skill's dir) covers mock-behavior anti-patterns in more depth.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

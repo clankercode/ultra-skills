@@ -96,3 +96,7 @@ Operate on a leaf node path `nodes/<path>/`. Do not skip or reorder.
 - **HANDOFF.md without SHAs.** Future drift becomes invisible. Record exact INTERFACE SHAs this node was built against.
 - **Forbidden-sections omitted.** Workers rationalize (`toMatchObject`, `any`, invented fields). Every brief needs concrete anti-patterns.
 - **Running reviewers in the wrong order.** Spec-compliance is cheap and cuts scope drift; run it first. Code-quality on non-spec-compliant code wastes the reviewer's cycle.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

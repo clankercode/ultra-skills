@@ -113,3 +113,7 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 - `ultra-skills/docs/DESIGN.md` — full architecture, plan-tree model, phase flow, review cadence.
 - `ultra-planner/SKILL.md` — dispatch table (phase → skill), the forward-direction counterpart to this index.
 - `ultra-skills/README.md` — status table for each skill (MVP / pending GREEN / done).
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

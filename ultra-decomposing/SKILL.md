@@ -68,3 +68,7 @@ STOP and self-correct if any occur:
 - **Contract-last:** scaffolding child dirs before drafting cross-child contracts, then retrofitting interfaces.
 - **Hidden cross-cutting concerns:** auth, config, lifecycle referenced by every child with no owner — either assign to one child or promote to an infra sibling.
 - **Over-decomposition:** creating children that each hold <5 tasks. Merge back.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

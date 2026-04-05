@@ -94,3 +94,7 @@ Operate against a leaf node's `SHADOW/` dir at `nodes/<leaf>/SHADOW/`. Do not sk
 - `ultra-skills/ultra-cross-doc-review/SKILL.md` — structural reference for severity triage + patch discipline.
 - `ultra-skills/research/shadow-code/LIFECYCLE.md` — why FREEZE matters (STATUS transitions).
 - `ultra-skills/research/shadow-code/INTEGRATION_IDEAS.md` — 4-skill family context.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

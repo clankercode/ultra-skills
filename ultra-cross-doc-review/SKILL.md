@@ -93,3 +93,7 @@ Checklist: naming, interface-fit, cycles, missing-docs, types, overlap, public-i
 - **Eyeball cycle-check:** scanning depends-on visually instead of building the graph. Cycles across 3+ hops get missed.
 - **Name-drift blindness:** only flagging exact collisions. `UserId`/`user_id`/`user_uuid` is the canonical pattern.
 - **Timestamp collision:** date-only filename overwrites prior reviews. Use `YYYY-MM-DD-HHMM`.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

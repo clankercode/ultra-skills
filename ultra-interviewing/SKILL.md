@@ -87,3 +87,7 @@ Ids are monotonic (`Q001`, `Q002`, ...). Never reuse or renumber.
 - **Queue-dumping:** surfacing the full backlog every checkpoint. Cadence exists — respect it.
 - **Orphan resolutions:** answers captured in chat but never written to INTERVIEW_QUEUE.md or DECISIONS.md.
 - **Exact-string dedup:** "which DB?" and "pick a datastore" are the same item — merge semantically.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

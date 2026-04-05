@@ -79,3 +79,7 @@ Operate in order. Do not skip calibration or the dimension walk.
 - **Ecosystem blindness:** reading only the SKILL.md body. A skill can look perfect in isolation and still be orphaned from the planner dispatch table.
 - **Fix-free findings:** the review owns the proposed fix, not the author.
 - **In-chat review:** REVIEW.md on disk is the artifact; without it there is nothing to diff against.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```

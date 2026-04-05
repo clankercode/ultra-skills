@@ -122,3 +122,7 @@ STOP and self-correct if any of these occur:
 ## Reference
 
 See `ultra-skills/docs/DESIGN.md` for full architecture, plan-tree model, review cadence, and rationale.
+
+```!
+[ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps. Red Flags and Common Mistakes are living documents.*\n'
+```
