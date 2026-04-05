@@ -11,6 +11,8 @@ Generates a **planning-shadow** — a TypeScript-like pseudocode architecture sp
 
 **Core principle:** Shadow is a typed architecture artifact, not prose. Every fallible path names its error variant; every cross-node type cites source + hash; every open question carries a severity tier tied to a shadow line. The format does load-bearing work — ADTs catch missing-case bugs at write time. See `ultra-skills/docs/SHADOW_SPEC.md` for canonical format rules.
 
+**Bootstrap guard:** refuses to run without a `SHADOW_SPEC.md` marker in the project rules file (CLAUDE.md / AGENTS.md / .cursor-rules) — enforced at Step 0. Prevents orphaned shadow artifacts downstream agents don't know to respect.
+
 ## When to Use
 
 | Signal | Use? |

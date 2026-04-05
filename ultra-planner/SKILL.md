@@ -80,6 +80,8 @@ For each phase, dispatch to a skill. Ultra-* sub-skills are preferred; fall back
 |---|---|---|
 | Context budget / delegation discipline | `ultra-context-hygiene` | Inline reminders to cap token spend |
 | YAGNI lens pass on in-progress artifacts (call from `ultra-decomposing`, `ultra-plan-research`, `ultra-writing-plans`, `ultra-cross-doc-review`, `ultra-writing-skills`) | `ultra-yagni` | Inline "is this speculative?" check against anchor |
+| TDD discipline (RED-GREEN-REFACTOR cycle, Iron Law) grounding `ultra-implementing-solo` / `ultra-implementing-team` per-task execution and `ultra-writing-plans` task structure | `ultra-test-driven-development` | `superpowers:test-driven-development` |
+| Test-craft (WHAT makes a good test) — fast-test preference, behavior-not-mocks, deterministic time, flow-vs-narrow, contract smoke tests, helper extraction, tiering, test-complicity guard. Loaded by workers at RED-test-writing time under `ultra-implementing-solo` / `ultra-implementing-team` | `ultra-writing-tests` | Inline "testing the mock?" self-check + superpowers:test-driven-development `testing-anti-patterns.md` |
 
 **Meta (suite self-modification):**
 

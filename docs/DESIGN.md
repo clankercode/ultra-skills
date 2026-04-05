@@ -174,6 +174,8 @@ Reviews write findings to `REVIEW_<YYYY-MM-DD>_<type>.md` at the tree level, not
 | `ultra-reviewer` | Meta: reviews ultra-* skills (individually or as a family) against an 11-dimension checklist, triages BLOCKER/MAJOR/MINOR. | done (MVP) pending GREEN |
 | `ultra-context-hygiene` | Cross-cutting: context-as-budget discipline referenced by every dispatching skill. | done (MVP) |
 | `ultra-yagni` | Cross-cutting: reactive YAGNI lens for flagging speculative scope in in-progress artifacts (tells + tiering + ripple-check). | done (MVP) pending GREEN |
+| `ultra-test-driven-development` | Standalone / cross-cutting: canonical RED-GREEN-REFACTOR discipline (Iron Law, rationalizations, red flags) — ultra-* port of superpowers:TDD with fast-test preference + plan-tree awareness. | done (MVP) pending GREEN |
+| `ultra-writing-tests` | Craft / cross-cutting: WHAT makes a good test (behavior-not-mocks, deterministic time, flow-vs-narrow, contract smoke tests, helper extraction, tiering, test-complicity guard). Paired with `ultra-test-driven-development` (WHEN). | done (MVP) pending GREEN |
 | `ultra-index` | Reference: symptom-to-skill routing guide for the ultra-* suite (inverse of ultra-planner's dispatch table). | done (MVP) pending GREEN |
 
 ### Phase 4 — Execution
@@ -193,6 +195,24 @@ Reviews write findings to `REVIEW_<YYYY-MM-DD>_<type>.md` at the tree level, not
 | `ultra-shadow-review` | Architecture review of SHADOW/; emits FREEZE/REVISE/ESCALATE. | done (MVP) pending GREEN |
 | `ultra-shadow-drift` | Post-implementation drift check: real code vs. frozen shadow. | done (MVP) pending GREEN |
 | `ultra-shadow-regen` | Derives current-shadow from real code on demand; emits SHADOW_DIVERGENCE.md (raw 5-axis deltas, no classification). | done (MVP) pending GREEN |
+
+### Classification vocabularies across the suite
+
+Five distinct classification schemes are in use; all are intentional and semantically distinct, but can confuse newcomers reading across skills. Summary:
+
+| Scheme | Used by | Values | Purpose |
+|---|---|---|---|
+| Severity triage | `ultra-reviewer`, `ultra-cross-doc-review`, `ultra-yagni`, `ultra-shadow-review` (per-finding), `ultra-shadow-drift` (severity) | BLOCKER / MAJOR / MINOR | Tiers review findings by blocking force |
+| Freeze verdict | `ultra-shadow-review` | FREEZE / REVISE / ESCALATE | Gates shadow → real-code handoff |
+| Drift classification | `ultra-shadow-drift` | BUG / SHADOW-UPDATE / ACCEPTABLE-EVOLUTION / FEATURE-DROPPED | Classifies real-code-vs-shadow deltas post-implementation |
+| Direction markers | `ultra-shadow-regen` | `[+]` / `[-]` / `[~]` | Descriptive delta direction only; no judgement |
+| ADR status + interview priority | `ultra-plan-from-seed`, `ultra-interviewing` | proposed / accepted (ADR) · P0 / P1 / P2 (interview queue) | Tracks decision maturity and question urgency |
+
+Plus `STATUS: planning / frozen / graduated` in `SHADOW/META.md` for shadow lifecycle (shared across the shadow family).
+
+**Artifact-naming collision notes.** Two pairs of similarly-named files serve different purposes:
+- **`DIVERGENCE_LOG.md`** (per-leaf, written by `ultra-implementing-solo` / `ultra-implementing-team` during execution — logs plan-vs-reality gaps mid-run) vs **`SHADOW_DIVERGENCE.md`** (per-leaf, written by `ultra-shadow-regen` once — raw 5-axis delta report between frozen planning-shadow and derived current-shadow).
+- **`SESSION.md`** (tree-level, cross-session planner brain used by `ultra-planner`, `ultra-implementing-solo`, `ultra-plan-from-seed`) vs **`SESSION_STATE.md`** (per-leaf, per-execution leader state used by `ultra-implementing-team`).
 
 **Phase 1 (MVP, this repo):** ultra-planner only. Callable as a thin orchestrator that:
 1. Recognizes when it applies (user describes a large multi-component system)

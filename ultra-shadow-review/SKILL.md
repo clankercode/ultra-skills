@@ -11,6 +11,8 @@ Reviews a leaf node's `SHADOW/` artifacts — the typed pseudocode produced by `
 
 **Core principle:** Catch architecture bugs at the shadow layer where iteration is cheap (~5× cheaper than post-real-code review). Every finding must name a shadow line, carry a severity, propose a concrete fix — and every BLOCKER must carry a one-line test sketch that would catch the bug if it slipped into real code. Freeze is a gate, not a rubber stamp.
 
+**Checklist scope:** walks a 9-dimension shadow-review checklist (distinct from `ultra-reviewer`'s 11-dimension suite checklist — different target, different dimensions).
+
 ## When to Use
 
 | Signal | Use? |

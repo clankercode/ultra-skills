@@ -28,7 +28,7 @@ Executes a leaf-node `PLAN.md` when YOU are the sole executor — no fresh subag
 
 Operate on leaf node path `nodes/<path>/` with PLAN.md present. Do not skip or reorder.
 
-1. **Load background skills.** Invoke `superpowers:subagent-driven-development` and `superpowers:test-driven-development` via the Skill tool. The Iron Law (no production code without a failing test first) is non-negotiable in solo mode.
+1. **Load background skills.** Invoke `superpowers:subagent-driven-development` and `superpowers:test-driven-development` via the Skill tool. Also load `ultra-test-driven-development` for the RED-GREEN-REFACTOR lifecycle discipline (Iron Law, rationalizations table) and `ultra-writing-tests` for test-writing craft (fast-test preference, DI-seam discipline, test-complicity guard). The Iron Law (no production code without a failing test first) is non-negotiable in solo mode.
 
 2. **Pin sibling INTERFACE.md paths.** Read PLAN.md; enumerate every sibling INTERFACE.md from its "Cross-node references" header. For each, record path + last-modified timestamp + SHA-256 in `SESSION.md` under `Pinned siblings`. If any referenced sibling is **unreachable or missing** → **STOP. Do not invent types.** Log to `DIVERGENCE_LOG.md` and escalate to the leader. Inventing cross-node shapes is the top RED-baseline failure; it is forbidden.
 
@@ -43,7 +43,7 @@ Operate on leaf node path `nodes/<path>/` with PLAN.md present. Do not skip or r
    - **b.** Write the failing test. Use real types from pinned siblings — never re-derive a shape from a description.
    - **c.** Run and VERIFY RED. Confirm it fails for the expected reason (missing code, not typo). Passes immediately → test is wrong, rewrite.
    - **d.** Write minimal code to pass. No speculative fields, no extras.
-   - **e.** Run and VERIFY GREEN. Re-run the full suite so you catch regressions.
+   - **e.** Run and VERIFY GREEN. Re-run the full suite so you catch regressions. Prefer fast tests per `ultra-writing-tests` — unit <100ms, integration <1s, context-dependent.
    - **f.** Commit with message `task N: <task name>`.
    - **g.** Update SESSION.md: task index, commit SHA, any open plan gaps, next action.
 

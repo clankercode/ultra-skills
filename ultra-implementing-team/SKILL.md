@@ -13,6 +13,8 @@ Executes a leaf-node `PLAN.md` as a **leader** that dispatches fresh workers per
 
 **Core principle:** Workers NEVER read sibling nodes. The leader reads sibling INTERFACE.md files once, pins SHAs, pastes required types verbatim into each brief. Fixes drift at the leader level, keeps worker context clean.
 
+**State file naming:** uses per-leaf `nodes/<path>/SESSION_STATE.md` (per-execution leader state for this leaf's run) — distinct from the tree-level `docs/ultra-plans/<slug>/SESSION.md` (cross-session planner brain used by `ultra-planner` and `ultra-implementing-solo`). Separate names avoid collision.
+
 **REQUIRED BACKGROUND:** Invoke `superpowers:subagent-driven-development` via the Skill tool. This skill EXTENDS it with hierarchical discipline (SHA pinning, leader-curated context, DIVERGENCE_LOG, HANDOFF). Not loaded → stop and load.
 
 ## When to Use
@@ -50,6 +52,7 @@ Operate on a leaf node path `nodes/<path>/`. Do not skip or reorder.
 
 7. **Dispatch brief template** — every brief MUST contain:
    - **Context** — leader-curated scene + sibling types pasted verbatim with SHA citations
+   - **Skills to load** — workers load `ultra-test-driven-development` (RED-GREEN-REFACTOR discipline, Iron Law) and `ultra-writing-tests` (test-writing craft: fast-test preference, DI-seam discipline, contract smoke tests) as standard. Prefer fast tests per `ultra-writing-tests` — unit <100ms, integration <1s, context-dependent.
    - **Task** — full PLAN.md task text, with TDD steps (RED test → FAIL → implement → PASS → commit)
    - **Quality bar** — per-task checks
    - **Stop condition** — what DONE means; what to report if BLOCKED / NEEDS_CONTEXT

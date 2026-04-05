@@ -685,6 +685,86 @@ The discipline for modifying ultra-skills itself. Extends superpowers:writing-sk
 
 ---
 
+### Phase 5 — Testing craft
+
+#### 21. ultra-test-driven-development
+
+**Pressure scenario:** Worker subagent dispatched by ultra-implementing-solo/team needs TDD lifecycle discipline (Iron Law, RED-GREEN-REFACTOR cycle, verify-red, verify-green) but the ultra suite user may not have `superpowers:test-driven-development` loaded. Without a ported ultra-* equivalent, workers either skip TDD discipline or reference a skill that isn't in their environment.
+
+**GREEN expectation (with ultra-test-driven-development):** worker loads a self-contained ultra-* TDD skill preserving Iron Law, verify-red/verify-green steps, Rationalizations table, Red Flags, When Stuck guidance, and Verification Checklist — adapted with ultra-specific guidance (fast-test preference, flow-covering vs narrow-unit granularity, sibling INTERFACE.md import rule).
+
+**Test Results (2026-04-05, RED → GREEN):**
+
+| Dimension | RED (unported) | GREEN (ported) |
+|---|---|---|
+| Availability without superpowers loaded | worker references absent skill or skips TDD discipline | self-contained ultra-* skill loads from ultra suite |
+| Iron Law statement | present in superpowers but unreachable | preserved verbatim in ultra suite |
+| RED-GREEN-REFACTOR cycle | preserved in superpowers | preserved in ultra-test-driven-development |
+| Verify-red mandatory step | present in superpowers | preserved |
+| Rationalizations table | superpowers version | preserved + added ultra-specific row (sibling INTERFACE invention) |
+| Fast-test preference (unit/integration budgets) | absent | added — unit <100ms, integration <1s; crypto/distributed/network-bound may legitimately exceed |
+| Flow-covering vs narrow-unit guidance | absent (implicit one-behavior-per-test dogma) | added — per-case choose, not dogma |
+| Sibling INTERFACE import rule | absent | added — ultra plan-tree awareness |
+| `@testing-anti-patterns` dependency | present | removed (not in ultra suite) |
+| "your human partner" language | present in superpowers | dropped (ultra framing) |
+
+**Verdict:** GREEN-equivalent. This is a port of an already-proven superpowers skill, so no formal RED baseline — ecosystem integration verified (DESIGN.md + README + ultra-planner dispatch + ultra-index routing all updated), and user-guidance folded in via SendMessage resume (flow-covering + no-dogma, fast-test preference with context-dependent caveat). Skill is now reachable from the ultra suite without superpowers dependency, preserves all load-bearing discipline (Iron Law, verify-red/green, Rationalizations, Red Flags, Verification Checklist, Final Rule), and adds ultra-specific content that the superpowers original lacks: sibling INTERFACE import rule, fast-test budgets, flow-vs-narrow granularity choice.
+
+**Refactor candidates (future, not blocking):**
+
+1. **Word count 1236w above 700-1100 target** — tighten only if subsequent dogfood surfaces no gaps.
+2. **ASCII flow replaces Graphviz** — consider verifying readability with a second reader.
+3. **Per-framework mapping tables** — consider adding vitest/jest/pytest cheatsheets if workers report confusion.
+4. **Final Rule block duplication** — verify whether it duplicates content in Iron Law + Verification Checklist.
+5. **Flow-vs-narrow "Choose per case" guidance** — could benefit from a flowchart.
+6. **Rationalizations table overlap** — could merge duplicates with ultra-writing-tests' list after GREEN dogfood.
+
+**Decision:** done (MVP), pending suite-level dogfood review.
+
+**Test artifacts:** none (port-based); verified via ecosystem integration + SendMessage-resume for user-guidance.
+
+#### 22. ultra-writing-tests
+
+**Pressure scenario:** Worker subagent dispatched by ultra-implementing-team receives task "implement `fetchPRs(repo, since)` with acceptance criteria: pagination terminates, empty repo returns empty array, network failures return `Err` not throw" — sibling `01-github-fetcher/INTERFACE.md` defines `PRRecord`/`FetchError`/`Result`. Worker has TDD lifecycle guidance but NOT test-writing craft guidance, so writes tests with naive drift (locally redefined types, mock-behavior assertions, wall-clock timing, flat test organization).
+
+**GREEN expectation (with ultra-writing-tests):** worker applies 9 techniques, extracts helpers, imports types verbatim from sibling, uses fake timers, sets 50ms per-test budget, mixes narrow + flow tests, flags integration tier separately.
+
+**Test Results (2026-04-05, RED → GREEN):**
+
+| Dimension | RED | GREEN |
+|---|---|---|
+| Production DI parameter | `octokit?` in fetchPRs signature | factory `createGithubFetcher(http)` construction-time |
+| Type imports | locally redefined `PRRecord`/`FetchError`/`Result` (divergent from INTERFACE) | verbatim import from `../01-github-fetcher/types` |
+| Mock-behavior assertions | multiple `toHaveBeenCalledTimes/With` | **zero** — scripted-client exhaustion-throw + output assertions |
+| Time determinism | wall-clock `Date.now()` in assertions (flaky) | `vi.useFakeTimers()` + `setSystemTime` |
+| Timing budget | `< 5000ms` (100x too loose) | per-test `{ timeout: 50 }` constant |
+| Test organization | single flat describe, 11 tests | tiered (5 narrow normalizePR + 11 flow fetchPRs + 1 env-gated integration) |
+| Helpers extraction | inline, duplicated across tests | `test-helpers.ts` with 4 helpers |
+| Integration tests | mixed into default suite | separate file, env-gated (`INTEGRATION=1`), `@integration @slow` tagged |
+| Flow-covering | narrow-only (one-behavior-per-test dogma) | narrow + flow mix, chose per-case |
+| Test naming | imperative / method-shape | behavior-focused ("paginates across full-then-partial pages and returns all PRs in order") |
+| Contract smoke test | none | `fakeDigestRenderer(prs: PRRecord[])` consuming SUT output through sibling-typed signature |
+| Edge case coverage | 3 acceptance criteria, ad-hoc extras | 3 criteria + exact-PER_PAGE boundary + user:null author + state-derivation from merged_at + error-on-page-2 partial-pagination abort |
+| Red Flags caught | n/a (no skill loaded) | 3 caught mid-compose (`http?` param → factory; `toHaveBeenCalledTimes(2)` → output assertion; redefined PRRecord → sibling import) |
+| Test count | 11 flat | 17 tiered (16 active, 1 env-gated) |
+
+**Verdict:** GREEN. Skill's 9 techniques forced every naive drift the RED baseline produced. DI-seam discipline, contract-first typing, deterministic time, tight timing budget, tier separation, and flow-vs-narrow choice all applied cleanly. Zero mock-behavior assertions — a clean inversion of RED baseline's approach.
+
+**Refactor candidates (future, not blocking):**
+
+1. **Word count 1592w above 900-1200 target** — flow-covering section added mid-authoring; tighten after dogfood.
+2. **"Second duplication" threshold for helper extraction is subjective** — could add clearer trigger.
+3. **Contract smoke test "fake matching consumer's expected input signature"** — needs stronger link to ultra-writing-plans' contract-smoke-test step.
+4. **Narrow-vs-flow choice for pure state-derivation functions** (like normalizePR) is judgement-call — could document.
+5. **Framework-specific cheatsheet** (vitest/jest/pytest) — consider if workers report drift.
+6. **Property-based testing + mutation testing** mentioned in YAGNI — revisit if dogfood surfaces gaps.
+
+**Decision:** done (MVP), pending suite-level dogfood review.
+
+**Test artifacts:** `/tmp/ultra-writing-tests-red/` (naive baseline, 2 files), `/tmp/ultra-writing-tests-green/` (with skill loaded, 6 files including separate integration + helpers).
+
+---
+
 ## This Session's Deliverables
 
 **Done if:**

@@ -45,9 +45,9 @@ Operate on a leaf node path `nodes/<path>/`. Do not skip or reorder.
    - **Proposed INTERFACE amendment** → append to sibling node's `NOTES.md` as a suggested addition (e.g. "PRRecord needs `title: string` for human-readable digests") and flag in PLAN header.
    Working around a missing field without filing one of these is a red flag.
 
-7. **Invoke `superpowers:writing-plans` discipline for local task structure.** File-structure map, bite-sized 5-step tasks (failing test → FAIL → implement → PASS → commit), no-placeholders, self-review. This skill extends that; it does not re-teach it.
+7. **Invoke `superpowers:writing-plans` discipline for local task structure.** File-structure map, bite-sized 5-step tasks (failing test → FAIL → implement → PASS → commit), no-placeholders, self-review. This skill extends that; it does not re-teach it. The RED-GREEN-REFACTOR lifecycle emitted in each task follows `ultra-test-driven-development` (Iron Law, rationalizations table); workers executing these tasks should also load `ultra-writing-tests` for test-writing craft (fast-test preference, DI-seam discipline, contract smoke tests).
 
-8. **Require contract smoke test(s).** Per distinct sibling consumer boundary, add a final task: a test feeding this node's output through a fake of the consumer's expected input signature. One per consumer. Non-optional — the last task(s) of every ultra leaf PLAN.
+8. **Require contract smoke test(s).** Per distinct sibling consumer boundary, add a final task: a test feeding this node's output through a fake of the consumer's expected input signature. One per consumer. Non-optional — the last task(s) of every ultra leaf PLAN. See `ultra-writing-tests` for the contract-smoke-test pattern used here.
 
 9. **Cite sibling INTERFACE.md paths in PLAN header.** Add a "Cross-node references" block after the Architecture line listing each sibling INTERFACE path consulted + last-modified timestamp. Stale relative to current decomposing cycle → "Freshness warning" note + P1 interview item.
 

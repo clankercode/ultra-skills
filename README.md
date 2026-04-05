@@ -25,6 +25,8 @@ A skill suite for **hierarchical, multi-document planning** of systems too large
 | `ultra-reviewer` | done (MVP) pending GREEN |
 | `ultra-context-hygiene` | done (MVP) |
 | `ultra-yagni` | done (MVP) pending GREEN |
+| `ultra-test-driven-development` | done (MVP) pending GREEN |
+| `ultra-writing-tests` | done (MVP) pending GREEN |
 | `ultra-index` | done (MVP) pending GREEN |
 | `ultra-implementing-solo` | done (MVP) pending GREEN |
 | `ultra-implementing-team` | done (MVP) pending GREEN |

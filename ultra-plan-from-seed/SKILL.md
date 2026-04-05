@@ -54,13 +54,13 @@ Operate on a seed file path provided by the user or dispatcher. Target tree root
 10. **INTERVIEW_QUEUE.md — augment beyond seed's explicit open questions.** Copy every open question from the seed. THEN append bootstrap-inferred gaps from steps 3-9: ADRs with missing rationale, undefined cross-node types, depth-disparity flags, scope-tier ambiguities, invention candidates (struct shapes, event-name conventions, client choices, endpoint ownership, timing/lifecycle assumptions). Each new row: P0/P1/P2, topic, default, rationale. A bootstrap that produces fewer new questions than the seed listed is a red flag.
 
 11. **Structural-coverage self-check.** Walk on disk:
-    - Every seed section mapped in ORIGIN.md?
-    - Every ADR has rationale + alternatives, OR is `rationale pending` with a P1 row?
-    - Every cross-node type appears in top-level `INTERFACES.md`?
-    - Every parent with ≥2 children has CHILDREN.md with non-overlap paragraph?
-    - Every "(propose: X)" preserved as `proposed`, not flattened?
-    - Seed's Verification/Acceptance captured in PRODUCT_GOALS?
-    - Depth-disparity nodes flagged with interview row?
+    - **11a.** Every seed section mapped in ORIGIN.md?
+    - **11b.** Every ADR has rationale + alternatives, OR is `rationale pending` with a P1 row?
+    - **11c.** Every cross-node type appears in top-level `INTERFACES.md`?
+    - **11d.** Every parent with ≥2 children has CHILDREN.md with non-overlap paragraph?
+    - **11e.** Every "(propose: X)" preserved as `proposed`, not flattened?
+    - **11f.** Seed's Verification/Acceptance captured in PRODUCT_GOALS?
+    - **11g.** Depth-disparity nodes flagged with interview row?
     Missing any → fix before handoff. Full cross-doc-review runs in the planner.
 
 12. **Write handoff in SESSION.md.** Name the phase: **Phase 2 (refinement)** if the seed is clean and tree well-shaped; **Phase 3 (scope-pruning)** if seed has v1/v1.x/v2 tiers or feature count looks bloated. Record rationale. Recommend a tree-review (`ultra-cross-doc-review`) as planner's first action, then scope-pruning if tiers exist. Record interview/ADR counts. Update ROOT.md tree view.

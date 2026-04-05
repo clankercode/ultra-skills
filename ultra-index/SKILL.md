@@ -35,10 +35,14 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 | User says "this feels bloated" / "help me cut scope" | `ultra-scope-pruning` | Prune |
 | Speculative plurality, single-case abstraction, or future-proofing language in a draft | `ultra-yagni` | Cross-cutting lens |
 | Infra weight feels out of proportion to stakes (Kafka for a cron) | `ultra-yagni` | Cross-cutting lens |
+| About to implement a feature / bugfix; need the RED-GREEN-REFACTOR cycle and Iron Law | `ultra-test-driven-development` | Cross-cutting lens |
+| Tempted to write code before the test, or a test passed on first run | `ultra-test-driven-development` | Cross-cutting lens |
 | 3+ open user questions piling up, need batched surfacing | `ultra-interviewing` | Interview |
 | Need to queue an ambiguity instead of asking inline | `ultra-interviewing` | Interview |
 | INTERFACE.md files stable, need diagrams / mockups / demos | `ultra-design-artifacts` | Artifacts |
 | Writing a leaf-node PLAN.md with sibling contract dependencies | `ultra-writing-plans` | Plan |
+| Writing a RED test / contract smoke test / extending a test file — behavior-not-mocks, deterministic time, flow-vs-narrow, helper extraction, tiering | `ultra-writing-tests` | Craft / cross-cutting lens |
+| Test passes but doesn't assert on SPEC behavior (test-complicity) / mock-call-count assertions / timing budgets 100x too loose | `ultra-writing-tests` | Craft / cross-cutting lens |
 | File >1MB, same dataset queried 2+ times, or 3+ data-passing steps | `ultra-context-hygiene` | Cross-cutting lens |
 | Creating or editing an ultra-* SKILL.md | `ultra-writing-skills` | Meta |
 | Reviewing a new or shipped ultra-* skill against the 11-dimension checklist | `ultra-reviewer` | Meta |
@@ -79,12 +83,16 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 **Cross-cutting lenses (layered onto other phases)**
 - `ultra-context-hygiene` — Context-as-budget; delegate branching work; use narrow tools; persist to disk.
 - `ultra-yagni` — Reactive speculative-scope flagger with 6 tells + BLOCKER/MAJOR/MINOR tiering + ripple-check.
+- `ultra-test-driven-development` — RED-GREEN-REFACTOR discipline, Iron Law, rationalizations table, fast-test preference. Grounds `ultra-implementing-solo` / `ultra-implementing-team` and the task structure `ultra-writing-plans` emits.
+- `ultra-writing-tests` — Test-craft companion to `ultra-test-driven-development`: WHAT makes a good test (behavior-not-mocks, deterministic time, flow-vs-narrow, contract smoke tests, helper extraction, tiering, test-complicity guard). Loaded by workers at RED-test-writing time.
 
 ## Cross-cutting lenses: when and how
 
 **ultra-context-hygiene** — layer on when ANY phase involves: reading files you haven't sized, running 3+ data-passing steps inline, re-parsing the same file, or reaching for Bash+pipe when Grep's `count`/`head_limit` would do. Invoke proactively at the start of dispatching phases (research, review) and before any big-file read.
 
 **ultra-yagni** — layer on INSIDE decomposing, plan-research, writing-plans, cross-doc-review, and writing-skills after a draft exists but before it ships. It does not run standalone. Its output is flags, not alternative scopes — hand flags to `ultra-scope-pruning` if tree-wide reshape follows.
+
+**ultra-writing-tests** — load at RED-test-writing time under `ultra-implementing-solo` / `ultra-implementing-team` (per-task TDD execution), or when adding a contract smoke test per sibling consumer (per `ultra-writing-plans`). Covers test-craft that `ultra-test-driven-development` deliberately punts on: fast-test targets + context-dependent caveats, behavior-not-mocks, flow-vs-narrow, fake timers, helper extraction, tiering, test-complicity guard. Pair with `ultra-test-driven-development` (WHEN/HOW) for full coverage.
 
 ## Meta skills: when the suite modifies itself
 
