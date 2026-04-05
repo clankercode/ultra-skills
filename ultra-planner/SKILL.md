@@ -1,0 +1,119 @@
+---
+name: ultra-planner
+description: Use when planning a multi-subsystem system (3+ independent components), a "platform" or "product" with many moving parts, or any project the user flags as big, comprehensive, careful, or "lots of components". Produces a hierarchical plan tree on disk across multiple sessions. NOT for single-feature planning — use superpowers:brainstorming for that.
+---
+
+# ultra-planner
+
+## Overview
+
+Orchestrates hierarchical, multi-document planning for systems too large for a single spec. Maintains a filesystem plan tree with per-node specs, interface contracts, research log, decision log, and session state. Dispatches to sub-skills for decomposition, research, review, and scope-pruning.
+
+**Core principle:** Plan-as-filesystem. Every decision is a file. Every file is resumable across sessions. Session state lives in `SESSION.md`; you MUST read it on invocation and update it after every significant action.
+
+## When to Use
+
+| Signal | Use? |
+|---|---|
+| "Build a platform / product / system with components A, B, C, D" | Yes |
+| "Help me carefully plan X" (X is non-trivial) | Yes |
+| "Lots of components / subsystems / moving parts" | Yes |
+| Single feature, single file, single function | No — use superpowers:brainstorming |
+| Fixing a bug | No — use superpowers:systematic-debugging |
+| Executing an existing plan | No — use superpowers:subagent-driven-development |
+
+## Plan Tree Directory Layout
+
+Create under `docs/ultra-plans/<project-slug>/`:
+
+```
+ROOT.md                 # tree structure + status dashboard
+SESSION.md              # current phase, last/next action, open threads
+INTERVIEW_QUEUE.md      # prioritized open questions for user
+RESEARCH_LOG.md         # findings from research subagents
+DECISIONS.md            # ADR-style architectural decisions
+PRODUCT_GOALS.md        # success criteria, non-goals
+nodes/NN-<slug>/        # one dir per subsystem
+  SPEC.md               # what this component does
+  INTERFACE.md          # what it exposes / depends on
+  PLAN.md               # leaf nodes only — TDD task list
+  NOTES.md              # working notes
+artifacts/              # diagrams, mockups, demos
+```
+
+Full spec: `ultra-skills/docs/DESIGN.md`.
+
+## Procedure (every invocation)
+
+1. Read `SESSION.md`. Missing → bootstrap (create tree dir + PRODUCT_GOALS via interview).
+2. Identify current phase and next planned action from SESSION.md.
+3. Execute one phase step (dispatch per table below, unless user requests batching).
+4. Update SESSION.md (`Last action`, `Next planned action`).
+5. At a checkpoint → surface status + top interview queue items to user.
+
+**Phases:** bootstrap → decompose → refine → prune → artifacts → leaf-plans → handoff. Revisit earlier phases when new info arrives.
+
+## Dispatch Table
+
+For each phase, dispatch to a skill. Ultra-* sub-skills are preferred; fall back to superpowers:
+
+| Phase | Ultra skill (preferred) | Fallback |
+|---|---|---|
+| Decompose node | `ultra-decomposing` | Inline reasoning + superpowers:brainstorming for node SPEC |
+| Research | `ultra-plan-research` | superpowers:dispatching-parallel-agents |
+| Tree review | `ultra-cross-doc-review` | superpowers:requesting-code-review pattern |
+| Prune scope | `ultra-scope-pruning` | Inline YAGNI challenge |
+| Interview user | `ultra-interviewing` | Inline one-question-at-a-time |
+| Leaf-node plan writing (Phase 5) | `ultra-writing-plans` | superpowers:writing-plans |
+| Phase 5.5 — Shadow generation | `ultra-shadow-code` | Skip; proceed directly to implementation (loses architecture-review gate) |
+| Phase 5.5b — Shadow review | `ultra-shadow-review` | Skip-then-freeze (loses cheap-layer bug catch); or inline ad-hoc review |
+| Leaf implementation (solo mode, no subagent dispatch) | `ultra-implementing-solo` | superpowers:test-driven-development inline |
+| Leaf implementation (team mode, leader + dispatched workers) | `ultra-implementing-team` | superpowers:subagent-driven-development |
+| Artifact generation (Phase 4) | `ultra-design-artifacts` | Inline graphviz/mermaid |
+
+**Cross-cutting (invoked by every dispatching phase):**
+
+| Concern | Ultra skill | Fallback |
+|---|---|---|
+| Context budget / delegation discipline | `ultra-context-hygiene` | Inline reminders to cap token spend |
+| YAGNI lens pass on in-progress artifacts (call from `ultra-decomposing`, `ultra-plan-research`, `ultra-writing-plans`, `ultra-cross-doc-review`, `ultra-writing-skills`) | `ultra-yagni` | Inline "is this speculative?" check against anchor |
+
+**Meta (suite self-modification):**
+
+| Phase | Ultra skill | Fallback |
+|---|---|---|
+| Create/modify an ultra-* skill | `ultra-writing-skills` | superpowers:writing-skills |
+| Review ultra-* skill(s) before shipping | `ultra-reviewer` | superpowers:requesting-code-review pattern |
+| Skill routing (symptom → which ultra-* skill) — **lookup aid, not dispatched** | `ultra-index` | Inline recall of suite |
+
+Check if the ultra sub-skill is loaded (listed in skills catalog). If not, use fallback and note in SESSION.md.
+
+## Session State Discipline
+
+- If user message contradicts SESSION.md's next action, trust user, update SESSION.md.
+- Never hold critical state in your own context — write it to disk.
+- **Checkpoint triggers:** end of phase, 3+ P0 questions accumulated, tree review finds issues, user asks "where are we?".
+
+## Red Flags
+
+STOP and self-correct if any of these occur:
+
+- Diving into leaf-node detail before the tree has a stable top-level shape
+- Writing a PLAN.md before the parent INTERFACE.md exists
+- Skipping SESSION.md read/update (breaks resumability)
+- Letting INTERVIEW_QUEUE.md grow unbounded without surfacing to user
+- Asking user one question at a time when many are queued — batch at checkpoints
+- Producing a flat list of tasks instead of a hierarchical tree when project is multi-subsystem
+- Running research inline (burns main-session context) instead of dispatching
+
+## Common Mistakes
+
+- **Scope drift up:** growing into a general agent framework. Non-goal.
+- **Scope drift down:** using this for a single-feature ask. Use superpowers:brainstorming.
+- **Over-decomposition:** splitting nodes that fit comfortably in one SPEC + PLAN. Only decompose when >15 tasks expected or multiple independent concerns.
+- **State-free operation:** skipping SESSION.md read/update.
+- **Single-session thinking:** large plans span sessions. Write everything to disk.
+
+## Reference
+
+See `ultra-skills/docs/DESIGN.md` for full architecture, plan-tree model, review cadence, and rationale.
