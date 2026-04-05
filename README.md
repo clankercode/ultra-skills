@@ -103,7 +103,7 @@ Per `superpowers:writing-skills`, each skill requires a pressure scenario + base
 
 ## Contributing New Ultra Skills
 
-1. Follow `superpowers:writing-skills` discipline (or `ultra-writing-skills` once built).
+1. Follow `ultra-writing-skills` discipline (falls back to `superpowers:writing-skills` if ultra-writing-skills isn't installed).
 2. Name the skill `ultra-<verb-ing>` (e.g., `ultra-decomposing`) or `ultra-<noun>` (e.g., `ultra-planner`).
 3. Document its pressure scenario in `docs/BUILD_PLAN.md` before writing the body.
 4. Update the status table above.
