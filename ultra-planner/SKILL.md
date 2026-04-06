@@ -85,6 +85,7 @@ For each phase, dispatch to a skill. Ultra-* sub-skills are preferred; fall back
 | Shadow regeneration (L3) — derive current-shadow from real code + emit SHADOW_DIVERGENCE.md | `ultra-shadow-regen` | Manual re-derivation of shadow from code; hand-written divergence notes |
 | Leaf implementation (solo mode, no subagent dispatch) | `ultra-implementing-solo` | superpowers:test-driven-development inline |
 | Leaf implementation (team mode, leader + dispatched workers) | `ultra-implementing-team` | superpowers:subagent-driven-development |
+| Goal-driven loop (adaptive iteration toward a goal without pre-written plan, auto-advance for multi-phase) | `ultra-goal-loop` | `goal-driven-loop` (personal skill, loses plan-tree awareness, context-hygiene, YAGNI lens, ultra-TDD grounding) |
 | Artifact generation (Phase 4) | `ultra-design-artifacts` | Inline graphviz/mermaid |
 
 **Cross-cutting (invoked by every dispatching phase):**

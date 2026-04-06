@@ -25,6 +25,7 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 |---|---|---|
 | Starting a multi-subsystem / platform / product plan from scratch | `ultra-planner` | Bootstrap |
 | Seeding a plan tree from an existing single-file markdown plan (Claude/Codex output, hand-written architecture doc) | `ultra-plan-from-seed` | Bootstrap |
+| Goal with AC needs adaptive iteration (no pre-written PLAN.md), possibly auto-advancing through project phases | `ultra-goal-loop` | Execution (adaptive) |
 | Need to break an oversized node into child nodes with contracts | `ultra-decomposing` | Decompose |
 | Parent SPEC has 6+ responsibilities or expected >15 leaf tasks | `ultra-decomposing` | Decompose |
 | Need to compare 2+ tech/library/service candidates with citations | `ultra-plan-research` | Research |
@@ -74,6 +75,9 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 
 **Plan**
 - `ultra-writing-plans` — Leaf-node PLAN.md writer with parent-coverage scan, cross-node type survey, contract smoke tests per consumer.
+
+**Execution (adaptive)**
+- `ultra-goal-loop` — Iterative assess→plan→implement→evaluate loop for goals without a pre-written PLAN.md. Auto-advance chains through multi-phase projects. Plan-tree aware, context-hygiene disciplined, YAGNI-lensed. Bridges planning and leaf-plan execution.
 
 **Meta (suite self-modification)**
 - `ultra-writing-skills` — TDD-for-skills authoring, orchestration pressure scenarios, ecosystem registration.

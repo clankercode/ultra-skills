@@ -178,6 +178,12 @@ Reviews write findings to `REVIEW_<YYYY-MM-DD>_<type>.md` at the tree level, not
 | `ultra-writing-tests` | Craft / cross-cutting: WHAT makes a good test (behavior-not-mocks, deterministic time, flow-vs-narrow, contract smoke tests, helper extraction, tiering, test-complicity guard). Paired with `ultra-test-driven-development` (WHEN). | done (MVP) pending GREEN |
 | `ultra-index` | Reference: symptom-to-skill routing guide for the ultra-* suite (inverse of ultra-planner's dispatch table). | done (MVP) pending GREEN |
 
+### Phase 3.5 — Goal-Driven Execution (adaptive, between planning and implementation)
+
+| Skill | Role | Status |
+|---|---|---|
+| `ultra-goal-loop` | Iterative assess→plan→implement→evaluate loop for goals without a pre-written PLAN.md. Auto-advance chains through multi-phase projects. Bridges the gap between planning and leaf-plan execution. | done (MVP) pending GREEN |
+
 ### Phase 4 — Execution
 
 | Skill | Role | Status |
