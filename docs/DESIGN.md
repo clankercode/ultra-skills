@@ -2,7 +2,7 @@
 
 **Purpose:** A skill suite for **hierarchical, multi-document planning** of systems too large for a single spec or plan. Extends (not replaces) the `superpowers` skill set.
 
-**Core insight:** `superpowers:brainstorming` and `superpowers:writing-plans` are single-topic, single-doc skills. They explicitly punt on "break this into sub-projects" — but give you no machinery for managing the resulting tree. Ultra-skills is that machinery.
+**Core insight:** `superpowers:brainstorming` and `superpowers:writing-plans` are single-topic, single-doc skills. They intentionally exclude "break this into sub-projects" — but give you no machinery for managing the resulting tree. Ultra-skills is that machinery.
 
 ---
 
@@ -37,6 +37,8 @@ Users symlink individual skills into their agent harness:
 ln -s $(pwd)/ultra-skills/ultra-planner ~/.claude/skills/ultra-planner
 ln -s $(pwd)/ultra-skills/ultra-planner ~/.agents/skills/ultra-planner
 ```
+
+`~/.claude/skills/` is for Claude Code; `~/.agents/skills/` is for Codex. (Use the installer scripts in the repo root — they handle both targets and are idempotent.)
 
 The repo is not itself a Claude plugin; skills are standalone. Invocation is by bare name: `ultra-planner`, not `ultra:ultra-planner`.
 
@@ -159,49 +161,49 @@ Reviews write findings to `REVIEW_<YYYY-MM-DD>_<type>.md` at the tree level, not
 
 ## Skill Catalog
 
-| Skill | Role | Status |
+| Skill | Role | What it does |
 |---|---|---|
-| `ultra-planner` | Orchestrator. Entry point. Manages tree & session state. | MVP target |
-| `ultra-plan-from-seed` | Bootstraps a plan tree from a single-file seed plan (Claude/Codex output, hand-written markdown); hands off to ultra-planner at Phase 2 or Phase 3. | done (MVP) pending GREEN |
-| `ultra-decomposing` | Recursive breakdown with interface contracts. | done (MVP) |
-| `ultra-plan-research` | Parallel research dispatch + synthesis into RESEARCH_LOG. | done (MVP) |
-| `ultra-cross-doc-review` | Consistency/architecture passes across tree. | done (MVP) |
-| `ultra-scope-pruning` | YAGNI loop — challenges every feature, requires justification. | done (MVP) |
-| `ultra-interviewing` | Queue management + surfacing protocol. | done (MVP) |
-| `ultra-design-artifacts` | Diagrams, SVGs, mockups, demos for iteration. | done (MVP) pending GREEN |
-| `ultra-writing-plans` | Hierarchical-aware plan writer (leaf-node PLAN.md). | done (MVP) pending GREEN |
-| `ultra-writing-skills` | Ultra's own skill-authoring discipline (for suite self-modification). | done (MVP) |
-| `ultra-reviewer` | Meta: reviews ultra-* skills (individually or as a family) against an 11-dimension checklist, triages BLOCKER/MAJOR/MINOR. | done (MVP) pending GREEN |
-| `ultra-context-hygiene` | Cross-cutting: context-as-budget discipline referenced by every dispatching skill. | done (MVP) |
-| `ultra-yagni` | Cross-cutting: reactive YAGNI lens for flagging speculative scope in in-progress artifacts (tells + tiering + ripple-check). | done (MVP) pending GREEN |
-| `ultra-test-driven-development` | Standalone / cross-cutting: canonical RED-GREEN-REFACTOR discipline (Iron Law, rationalizations, red flags) — ultra-* port of superpowers:TDD with fast-test preference + plan-tree awareness. | done (MVP) pending GREEN |
-| `ultra-writing-tests` | Craft / cross-cutting: WHAT makes a good test (behavior-not-mocks, deterministic time, flow-vs-narrow, contract smoke tests, helper extraction, tiering, test-complicity guard). Paired with `ultra-test-driven-development` (WHEN). | done (MVP) pending GREEN |
-| `ultra-index` | Reference: symptom-to-skill routing guide for the ultra-* suite (inverse of ultra-planner's dispatch table). | done (MVP) pending GREEN |
-| `ultra-batch-review` | Heavyweight review campaign: hierarchical scope decomposition, parallel review subagents, bottom-up synthesis (REVIEW.md + SYNTHESIS.md per parent), conflict-graph fix rounds. Requires user consent. | done (MVP) pending GREEN |
+| `ultra-planner` | Orchestrator. Entry point. Manages tree & session state. | Hierarchical plan tree for large multi-subsystem projects |
+| `ultra-plan-from-seed` | Bootstraps a plan tree from a single-file seed plan (Claude/Codex output, hand-written markdown); hands off to ultra-planner at Phase 2 or Phase 3. | Convert a seed doc into an ultra plan tree bootstrap |
+| `ultra-decomposing` | Recursive breakdown with interface contracts. | Split a plan-tree node into independent sub-nodes |
+| `ultra-plan-research` | Parallel research dispatch + synthesis into RESEARCH_LOG. | Research tech/library questions without burning main context |
+| `ultra-cross-doc-review` | Consistency/architecture passes across tree. | Cross-document coherence check across a plan tree |
+| `ultra-scope-pruning` | YAGNI loop — challenges every feature, requires justification. | Cut bloated scope down to a shippable v1 |
+| `ultra-interviewing` | Queue management + surfacing protocol. | Queue and batch user questions at natural checkpoints |
+| `ultra-design-artifacts` | Diagrams, SVGs, mockups, demos for iteration. | Generate visual architecture artifacts from INTERFACE.md files |
+| `ultra-writing-plans` | Hierarchical-aware plan writer (leaf-node PLAN.md). | Write a leaf-node PLAN.md respecting cross-node contracts |
+| `ultra-writing-skills` | Ultra's own skill-authoring discipline (for suite self-modification). | Author or edit ultra-* skill files |
+| `ultra-reviewer` | Meta: reviews ultra-* skills (individually or as a family) against an 11-dimension checklist, triages BLOCKER/MAJOR/MINOR. | Review and audit ultra-* skills for quality and consistency |
+| `ultra-context-hygiene` | Cross-cutting: context-as-budget discipline referenced by every dispatching skill. | Manage context when processing large files or datasets |
+| `ultra-yagni` | Cross-cutting: reactive YAGNI lens for flagging speculative scope in in-progress artifacts (tells + tiering + ripple-check). | Prune speculative scope from drafts and plans |
+| `ultra-test-driven-development` | Standalone / cross-cutting: canonical RED-GREEN-REFACTOR discipline (Iron Law, rationalizations, red flags) — ultra-* port of superpowers:TDD with fast-test preference + plan-tree awareness. | RED→GREEN→REFACTOR TDD cycle for implementation tasks |
+| `ultra-writing-tests` | Craft / cross-cutting: WHAT makes a good test (behavior-not-mocks, deterministic time, flow-vs-narrow, contract smoke tests, helper extraction, tiering, test-complicity guard). Paired with `ultra-test-driven-development` (WHEN). | Test-craft guidance for writing good test code |
+| `ultra-index` | Reference: symptom-to-skill routing guide for the ultra-* suite (inverse of ultra-planner's dispatch table). | Symptom-to-skill routing guide for the ultra-* suite |
+| `ultra-batch-review` | Heavyweight review campaign: hierarchical scope decomposition, parallel review subagents, bottom-up synthesis (REVIEW.md + SYNTHESIS.md per parent), conflict-graph fix rounds. Requires user consent. | Multi-scope parallel review campaign for large codebases |
 
 ### Phase 3.5 — Goal-Driven Execution (adaptive, between planning and implementation)
 
-| Skill | Role | Status |
+| Skill | Role | What it does |
 |---|---|---|
-| `ultra-goal-loop` | Iterative assess→plan→implement→evaluate loop for goals without a pre-written PLAN.md. Auto-advance chains through multi-phase projects. Bridges the gap between planning and leaf-plan execution. | done (MVP) pending GREEN |
+| `ultra-goal-loop` | Iterative assess→plan→implement→evaluate loop for goals without a pre-written PLAN.md. Auto-advance chains through multi-phase projects. Bridges the gap between planning and leaf-plan execution. | Adaptively iterate toward acceptance criteria |
 
 ### Phase 4 — Execution
 
-| Skill | Role | Status |
+| Skill | Role | What it does |
 |---|---|---|
-| `ultra-implementing-solo` | Leaf-PLAN.md executor for solo (no-dispatch) environments — Codex, OpenCode. Strict per-task TDD, sibling-contract pinning, disk-backed session state. | done (MVP) pending GREEN |
-| `ultra-implementing-team` | Leaf-PLAN.md executor for leader environments with worker dispatch (Claude Code). Leader owns sibling-INTERFACE SHA pinning, cross-node context curation, DIVERGENCE_LOG, 3-tier rollback; workers own single-task implementation under file-ownership discipline. | done (MVP) pending GREEN |
+| `ultra-implementing-solo` | Leaf-PLAN.md executor for solo (no-dispatch) environments — Codex, OpenCode. Strict per-task TDD, sibling-contract pinning, disk-backed session state. | Execute a leaf PLAN.md without subagent dispatch |
+| `ultra-implementing-team` | Leaf-PLAN.md executor for leader environments with worker dispatch (Claude Code). Leader owns sibling-INTERFACE SHA pinning, cross-node context curation, DIVERGENCE_LOG, 3-tier rollback; workers own single-task implementation under file-ownership discipline. | Execute a leaf PLAN.md with coordinated subagent workers |
 
 ### Shadow-code family (Phase 5.5)
 
-**NOTE:** Shadow-code is a cheap pseudocode architecture spec between PLAN.md and real code. Canonical spec: `ultra-skills/docs/SHADOW_SPEC.md`. TODO (leader): add a `SHADOW/` subdirectory row to the plan-tree directory-model diagram above, reflecting the new leaf-node layout from SHADOW_SPEC.md §1.
+**NOTE:** Shadow-code is a cheap pseudocode architecture spec between PLAN.md and real code. Canonical spec: `ultra-skills/docs/SHADOW_SPEC.md`. Leaf nodes that use the shadow family gain a `SHADOW/` subdirectory (alongside SPEC.md, INTERFACE.md, PLAN.md) containing `META.md`, the planning-shadow file, and optionally a frozen snapshot — see SHADOW_SPEC.md §1 for the full layout.
 
-| Skill | Role | Status |
+| Skill | Role | What it does |
 |---|---|---|
-| `ultra-shadow-code` | Generates planning-shadow for a leaf node (TypeScript-like + ADT). | done (MVP) pending GREEN |
-| `ultra-shadow-review` | Architecture review of SHADOW/; emits FREEZE/REVISE/ESCALATE. | done (MVP) pending GREEN |
-| `ultra-shadow-drift` | Post-implementation drift check: real code vs. frozen shadow. | done (MVP) pending GREEN |
-| `ultra-shadow-regen` | Derives current-shadow from real code on demand; emits SHADOW_DIVERGENCE.md (raw 5-axis deltas, no classification). | done (MVP) pending GREEN |
+| `ultra-shadow-code` | Generates planning-shadow for a leaf node (TypeScript-like + ADT). | Generate typed pseudocode shadow before writing real code |
+| `ultra-shadow-review` | Architecture review of SHADOW/; emits FREEZE/REVISE/ESCALATE. | Review a shadow artifact before freezing for real-code handoff |
+| `ultra-shadow-drift` | Post-implementation drift check: real code vs. frozen shadow. | Audit drift between frozen shadow and real code |
+| `ultra-shadow-regen` | Derives current-shadow from real code on demand; emits SHADOW_DIVERGENCE.md (raw 5-axis deltas, no classification). | Derive a fresh current-shadow from existing real code |
 
 ### Classification vocabularies across the suite
 

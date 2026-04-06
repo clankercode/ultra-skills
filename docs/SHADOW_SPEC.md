@@ -10,7 +10,7 @@ Shadow-code is a **cheap pseudocode architecture spec** sitting between `PLAN.md
 
 Shadow files are **TypeScript-like stubs with an ADT bias**. See `research/shadow-code/FORMAT_COMPARISON.md` for the full matrix and rationale.
 
-- **Typed signatures.** Every function has a typed signature using real type names from INTERFACE.md.
+- **Typed signatures.** Every function has a typed signature using real type names from INTERFACE.md. Shadow types must match INTERFACE.md signatures exactly — field names, optionality, and enum members must be identical. The shadow is a detailed rendering of the same contract defined in INTERFACE.md, not an independent sketch; any type it exports that is also declared in INTERFACE.md must be bit-for-bit compatible with that declaration.
 - **Discriminated-union error enums.** Each fallible function returns `Result<T, E>` where `E` is a discriminated union with `kind` tags and relevant payload per variant. No silent throws.
 - **`context(...)` header** at the top of every shadow file declaring imports/touches/exports:
   ```ts
@@ -22,7 +22,7 @@ Shadow files are **TypeScript-like stubs with an ADT bias**. See `research/shado
   ```
 - **Function bodies as comments.** Prefix error paths with `// !Err:` and happy-path outputs with `// =>`. One control-flow step per line.
 - **Cross-module calls as real TypeScript calls** using imported sibling types: `UserRepo.lookup(userId)`.
-- **Cross-node provenance.** Every type imported from a sibling cites source path + pinned hash: `import type { PRRecord } from "../01-github-fetcher/INTERFACE.md" // @hash:a3f2c9`.
+- **Cross-node provenance.** Every type imported from a sibling cites source path + pinned hash: `import type { PRRecord } from "../01-github-fetcher/INTERFACE.md" // @hash:a3f2c9`. The hash is a short SHA (or mtime-derived token) of the sibling's `INTERFACE.md` at the time the shadow was generated. It serves as a staleness detector: if the sibling's interface changes after the shadow was written, the recorded hash no longer matches the file's current hash, signalling that the shadow may be stale and the cross-module contract should be re-verified. When regenerating the shadow, update all `@hash:` values to match the then-current sibling INTERFACE.md hashes.
 
 Haskell-like format is honorable-mention for algebra-heavy leaves; Python type hints for Python-first reviewing audiences. See FORMAT_COMPARISON.md.
 
@@ -30,8 +30,10 @@ Haskell-like format is honorable-mention for algebra-heavy leaves; Python type h
 
 **Pattern L3 (regenerable-on-demand) + Pattern L4 (graduation) terminal.** See `research/shadow-code/LIFECYCLE.md`.
 
-- **Planning-shadow** lives in `nodes/<leaf>/SHADOW/`. Written by `ultra-shadow-code`. **Frozen** after Phase 5.5 gate passes (`STATUS: frozen` in `SHADOW/META.md`). Never manually edited after freeze.
-- **Current-shadow** is derived on-demand from real code by `ultra-shadow-regen` into `.ultra-cache/shadow-regen/<ts>/` (gitignored). Never overwrites the frozen planning-shadow.
+Lifecycle patterns at a glance: L2 = manual-sync (shadow kept up-to-date alongside code, high maintenance burden, rare); L3 = regenerable-on-demand (planning-shadow frozen after Phase 5.5 gate, current-shadow derived fresh from real code when needed — the recommended default); L4 = graduated (shadow becomes historical design record once the leaf reaches a stable milestone such as v1.0 or prod deploy, drift-checks become advisory).
+
+- **Planning-shadow** lives in `nodes/<leaf>/SHADOW/`. Written by `ultra-shadow-code`. Shadow files are named `<module>.shadow.ts` (one per module declared in `PLAN.md`'s file-structure map; single-module leaves produce one file, multi-module leaves produce one file per module). **Frozen** after Phase 5.5 gate passes (`STATUS: frozen` in `SHADOW/META.md`). Never manually edited after freeze.
+- **Current-shadow** is derived on-demand from real code by `ultra-shadow-regen` into `.ultra-cache/shadow-regen/<ts>/`. Never overwrites the frozen planning-shadow. The `.ultra-cache/` directory should be added to `.gitignore` — current-shadows are derived artifacts, not source of truth, and do not belong in version control. The frozen planning-shadow in `SHADOW/` is the versioned artifact.
 - **Graduation.** Once a leaf is stable (v1.0, prod deploy), `STATUS: graduated` marks shadow as historical design record; drift-check becomes advisory.
 - **Escape hatch.** A leaf's `DECISIONS.md` may declare `SHADOW_POLICY: living` for Pattern L2 (manual sync). Rare; reserved for architecture-stable subsystems with team commitment.
 
@@ -101,16 +103,20 @@ What a reviewer catches from this ~30 lines: every error case named with payload
 ## 6. Workflow
 
 ```
-ultra-shadow-code   → writes SHADOW/ (STATUS: planning)
-  ↓
-ultra-shadow-review → emits REVIEW_<YYYY-MM-DD>.md (FREEZE | REVISE | ESCALATE)
-  ↓ iterate until FREEZE
-FREEZE              → STATUS: frozen in SHADOW/META.md (Phase 5.5 gate)
-  ↓
-real-code gen       → reads frozen shadow as design input
-  ↓ post-implementation
-ultra-shadow-drift  → diffs real code against frozen shadow
-ultra-shadow-regen  → derives current-shadow on demand for queries
+Stage 1 — Generation (Phase 5.5):
+  ultra-shadow-code   → writes SHADOW/ (STATUS: planning)
+    ↓
+Stage 2 — Review + freeze gate (Phase 5.5b):
+  ultra-shadow-review → emits REVIEW_<YYYY-MM-DD>.md (FREEZE | REVISE | ESCALATE)
+    ↓ iterate until FREEZE
+  FREEZE              → STATUS: frozen in SHADOW/META.md (Phase 5.5 gate passed)
+    ↓
+Stage 3 — Real-code generation:
+  real-code gen       → reads frozen shadow as design input; shadow is read-only
+    ↓ post-implementation
+Stage 4 — Post-implementation queries:
+  ultra-shadow-drift  → diffs real code against frozen shadow; classifies deltas
+  ultra-shadow-regen  → derives current-shadow on demand into .ultra-cache/
 ```
 
 ## 7. When to use / when NOT to use
@@ -122,7 +128,7 @@ ultra-shadow-regen  → derives current-shadow on demand for queries
 - Team-dashboard-style multi-component leaves.
 
 **Do NOT use shadow-code when:**
-- Leaf is a one-function utility with obvious signature (overhead > payoff).
+- Leaf is a trivial utility: fewer than 2 exported functions, no cross-module type imports, and no error variants beyond a single fallible path (overhead > payoff).
 - Thin CRUD adapter with no architecture decisions to surface.
 - Real code is already written and stable (use `ultra-shadow-regen` instead).
 - SPEC+INTERFACE still in flux (shadow generation will thrash).
