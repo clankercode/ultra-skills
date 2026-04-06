@@ -53,7 +53,7 @@ Operate against target root. Each invocation advances one phase. State files car
 
 2. **Build scope hierarchy.** Group child scopes under parent conceptual scopes. A data-flow scope that spans two component scopes is a child of both. The system scope is always the root. Record dependencies: which scopes must be reviewed before others (leaf components first, flows that depend on them next, system last).
 
-3. **Write state files.** Create reviews/batchN/ (increment N if prior batch exists). Write scopes.md with every scope as a table row: id, type, paths, parent, deps, status (planned), review-output. Write per-scope directory scopes/rv-NN/ with SCOPE.md containing: paths covered, entry points, dependency scopes, and a tailored review prompt. Every file written must begin with the resume header defined in State File Formats.
+3. **Write state files.** Create reviews/batchN/ (increment N if prior batch exists). Copy `templates/scopes.md` and `templates/fixes.md` from the skill directory into reviews/batchN/, then populate scopes.md with scope table rows (id, type, paths, parent, deps, status: planned, review-output). Write per-scope directory scopes/rv-NN/ with SCOPE.md containing: paths covered, entry points, dependency scopes, and a tailored review prompt.
 
 4. **Get user consent.** *(LEADER-ONLY)* Present the scope plan: number of scopes, estimated subagent count, expected wall-clock time. Wait for explicit approval before dispatching reviews. Do not auto-proceed - this is a heavyweight operation.
 
@@ -104,7 +104,7 @@ Operate against target root. Each invocation advances one phase. State files car
 
 ### Phase 7 - Summary
 
-16. **Write SUMMARY.md.** Include: total scopes reviewed, findings by severity (before/after fix rounds), fix rounds executed, remaining open issues, and verdict. Verdict options:
+16. **Write SUMMARY.md.** Copy `templates/SUMMARY.md` from the skill directory into reviews/batchN/, then fill in: total scopes reviewed, findings by severity (before/after fix rounds), fix rounds executed, remaining open issues, and verdict. Verdict options:
     - CLEAN - zero open findings
     - ACCEPTABLE - only MINORs remain, none safety-critical
     - NEEDS-ATTENTION - MAJOR+ findings remain unresolved
@@ -113,11 +113,11 @@ Operate against target root. Each invocation advances one phase. State files car
 
 ## State File Formats
 
-**Resume header (required first line for ALL artifact files):**
+**Resume header (required first line of root state files):**
 
     <!-- ultra-batch-review artifact — to resume after compaction: invoke Skill tool with "ultra-batch-review"; current phase in Phase: header below -->
 
-Every file written during the campaign (scopes.md, fixes.md, SCOPE.md, REVIEW.md, SYNTHESIS.md, SUMMARY.md) must have this as its literal first line.
+scopes.md, fixes.md, and SUMMARY.md must have this as their literal first line. Use the template files in the skill directory (`templates/scopes.md`, `templates/fixes.md`, `templates/SUMMARY.md`) — they are pre-populated with this header and the correct scaffold.
 
 **scopes.md** header lines: Phase, Generated date, Target. Table columns: id, type, paths, parent, deps, status, review-output. The review-output column lists REVIEW.md (+ SYNTHESIS.md for parent scopes). Example rows:
 
@@ -146,7 +146,7 @@ Every file written during the campaign (scopes.md, fixes.md, SCOPE.md, REVIEW.md
 - Emitting CLEAN verdict with open BLOCKER or MAJOR findings
 - Re-running the full campaign instead of resuming from the Phase: header in state files
 - Marking a finding verified without dispatching a micro-review subagent
-- Writing any artifact file without the resume-header as its literal first line
+- Writing scopes.md, fixes.md, or SUMMARY.md from scratch instead of copying from skill templates
 
 ## Common Mistakes
 
