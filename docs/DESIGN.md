@@ -177,6 +177,7 @@ Reviews write findings to `REVIEW_<YYYY-MM-DD>_<type>.md` at the tree level, not
 | `ultra-test-driven-development` | Standalone / cross-cutting: canonical RED-GREEN-REFACTOR discipline (Iron Law, rationalizations, red flags) — ultra-* port of superpowers:TDD with fast-test preference + plan-tree awareness. | done (MVP) pending GREEN |
 | `ultra-writing-tests` | Craft / cross-cutting: WHAT makes a good test (behavior-not-mocks, deterministic time, flow-vs-narrow, contract smoke tests, helper extraction, tiering, test-complicity guard). Paired with `ultra-test-driven-development` (WHEN). | done (MVP) pending GREEN |
 | `ultra-index` | Reference: symptom-to-skill routing guide for the ultra-* suite (inverse of ultra-planner's dispatch table). | done (MVP) pending GREEN |
+| `ultra-batch-review` | Heavyweight review campaign: hierarchical scope decomposition, parallel review subagents, bottom-up synthesis (REVIEW.md + SYNTHESIS.md per parent), conflict-graph fix rounds. Requires user consent. | done (MVP) pending GREEN |
 
 ### Phase 3.5 — Goal-Driven Execution (adaptive, between planning and implementation)
 
@@ -208,10 +209,11 @@ Five distinct classification schemes are in use; all are intentional and semanti
 
 | Scheme | Used by | Values | Purpose |
 |---|---|---|---|
-| Severity triage | `ultra-reviewer`, `ultra-cross-doc-review`, `ultra-yagni`, `ultra-shadow-review` (per-finding), `ultra-shadow-drift` (severity) | BLOCKER / MAJOR / MINOR | Tiers review findings by blocking force |
+| Severity triage | `ultra-reviewer`, `ultra-cross-doc-review`, `ultra-yagni`, `ultra-shadow-review` (per-finding), `ultra-shadow-drift` (severity), `ultra-batch-review` (per-finding) | BLOCKER / MAJOR / MINOR | Tiers review findings by blocking force |
 | Freeze verdict | `ultra-shadow-review` | FREEZE / REVISE / ESCALATE | Gates shadow → real-code handoff |
 | Drift classification | `ultra-shadow-drift` | BUG / SHADOW-UPDATE / ACCEPTABLE-EVOLUTION / FEATURE-DROPPED | Classifies real-code-vs-shadow deltas post-implementation |
 | Direction markers | `ultra-shadow-regen` | `[+]` / `[-]` / `[~]` | Descriptive delta direction only; no judgement |
+| Batch-review verdict | `ultra-batch-review` | CLEAN / ACCEPTABLE / NEEDS-ATTENTION | Summary verdict for review campaign |
 | ADR status + interview priority | `ultra-plan-from-seed`, `ultra-interviewing` | proposed / accepted (ADR) · P0 / P1 / P2 (interview queue) | Tracks decision maturity and question urgency |
 
 Plus `STATUS: planning / frozen / graduated` in `SHADOW/META.md` for shadow lifecycle (shared across the shadow family).

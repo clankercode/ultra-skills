@@ -47,6 +47,7 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 | File >1MB, same dataset queried 2+ times, or 3+ data-passing steps | `ultra-context-hygiene` | Cross-cutting lens |
 | Creating or editing an ultra-* SKILL.md | `ultra-writing-skills` | Meta |
 | Reviewing a new or shipped ultra-* skill against the 11-dimension checklist | `ultra-reviewer` | Meta |
+| Codebase needs comprehensive multi-scope review campaign (components + flows + system + synthesis + iterative fix rounds) — heavyweight, requires user consent | `ultra-batch-review` | Post-implementation review |
 | Uncertain which skill to use / onboarding to the suite | `ultra-index` | Reference |
 
 ## Skill catalog (by phase)
@@ -63,6 +64,7 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 
 **Review**
 - `ultra-cross-doc-review` — 8-dimension checklist across the plan tree; emits BLOCKER/MAJOR/MINOR findings + patches.
+- `ultra-batch-review` — Heavyweight review campaign: hierarchical scope decomposition, parallel review subagents, bottom-up synthesis (REVIEW.md + SYNTHESIS.md per parent scope), conflict-graph fix rounds. Requires user consent.
 
 **Prune**
 - `ultra-scope-pruning` — Anchor-driven YAGNI pass across the feature set; produces ≥2 alternative v1 scopes; ADRs for cuts.
@@ -111,6 +113,7 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 3. **plan-research → cross-doc-review → writing-plans** — research commits a tech choice, review confirms contracts still fit, leaf plan cites the INTERFACE paths.
 4. **writing-skills → reviewer → ecosystem updates** — draft with RED/GREEN, review against 11 dimensions, update DESIGN.md + README + planner dispatch table in the same commit.
 5. **decompose → yagni lens → cross-doc-review** — flag speculative plurality and infra weight in new SPEC/INTERFACE before the tree-review pass runs.
+6. **implementing-solo/team → batch-review** — after implementation, run a full review campaign on the codebase for comprehensive coverage (heavyweight, requires user consent).
 
 ## Reference
 

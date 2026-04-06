@@ -1,0 +1,38 @@
+site_name: ultra-skills
+site_description: A skill suite for hierarchical, multi-document planning of large systems
+site_url: https://clankercode.github.io/ultra-skills
+repo_url: https://github.com/clankercode/ultra-skills
+edit_uri: edit/master/site-src/
+
+docs_dir: site-src
+site_dir: site
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: indigo
+    accent: indigo
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+
+nav:
+  - Home: index.md
+  - Design: design.md
+  - Build Plan: build-plan.md
+  - Shadow Spec: shadow-spec.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+  - tables
+  - fenced_code
+  - pymdownx.snippets:
+      base_path: ["."]

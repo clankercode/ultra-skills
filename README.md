@@ -35,6 +35,7 @@ A skill suite for **hierarchical, multi-document planning** of systems too large
 | `ultra-shadow-drift` | done (MVP) pending GREEN |
 | `ultra-shadow-regen` | done (MVP) pending GREEN |
 | `ultra-goal-loop` | done (MVP) pending GREEN |
+| `ultra-batch-review` | done (MVP) pending GREEN |
 
 ## Key Docs
 

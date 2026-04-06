@@ -765,6 +765,18 @@ The discipline for modifying ultra-skills itself. Extends superpowers:writing-sk
 
 ---
 
+### Phase 6 — Review Campaign
+
+#### 23. ultra-batch-review
+
+**Pressure scenario:** A codebase with ~15 files across 3 modules (`auth/`, `api/`, `db/`) needs comprehensive review. The modules have: shared types between auth and api, a data flow from api → db, conceptual overlap (error handling patterns across all 3), and system-level concerns (config loading, logging setup). Planted issues: a type mismatch between auth's exported `UserSession` and api's consumed `Session`, duplicated error-handling logic across all 3 modules, an unvalidated input path in api, a missing null check in db, and a system-level config race condition. Without skill: Claude does a single flat pass producing 3-5 issues, reviews module-by-module in chat losing cross-module findings, or says "looks good" with superficial notes. No scope decomposition, no parallel dispatch, no state tracking, no fix rounds, no synthesis of inter-module interactions.
+
+**GREEN expectation (with ultra-batch-review):** Creates `reviews/batch1/` with `scopes.md` (4+ scopes: 3 component + 1 dataflow + 1 conceptual + 1 system), dispatches review subagents in parallel, each writes to `reviews/batch1/scopes/rv-<id>/REVIEW.md`. Parent scopes with children produce both `REVIEW.md` (own files) and `SYNTHESIS.md` (cross-child interaction findings catching the type mismatch and duplicated error handling). Aggregates all findings into `fixes.md` with BLOCKER/MAJOR/MINOR triage and deduplication. Plans fix rounds via conflict-graph coloring. Dispatches fix subagents for non-overlapping sets. Verifies fixes via micro-review. Emits SUMMARY.md with verdict. User consent obtained before Phase 2 dispatch.
+
+**Test Results:** pending GREEN.
+
+---
+
 ### Cross-cutting Enhancement: Feasibility Gate (2026-04-05)
 
 **What:** Added feasibility-pushback guidance across 6 planning skills: ultra-planner, ultra-decomposing, ultra-writing-plans, ultra-scope-pruning, ultra-plan-from-seed, ultra-plan-research.

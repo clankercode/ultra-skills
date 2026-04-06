@@ -14,6 +14,9 @@ build/
 *~
 .DS_Store
 
+# MkDocs build output
+site/
+
 # Test artifacts
 /tmp/ultra-baseline/
 /tmp/ultra-green/
