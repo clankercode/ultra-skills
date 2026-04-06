@@ -35,23 +35,25 @@ Operate on a leaf node path `nodes/<path>/`. Do not skip or reorder.
 
 3. **Cross-doc-review gate.** Check `nodes/REVIEWS/` for a recent review (< 1 phase old) covering this node + its dependency/consumer siblings. Absent → invoke `ultra-cross-doc-review` (or ask ultra-planner to) before drafting. Record reviewed-at date in SESSION.md.
 
-4. **Parent-SPEC coverage scan.** Open parent SPEC.md and parent `CHILDREN.md`. Enumerate every responsibility the parent delegates to this child. Write the list to `nodes/<path>/NOTES.md` as a coverage checklist. Each item must map to a planned task before PLAN.md ships.
+4. **Feasibility scan.** Before planning tasks, review the node's SPEC.md for any requirements that appear technically infeasible or impossible (violates known theoretical limits, requires non-existent technology, demands contradictory properties). For each concern, dispatch a research subagent (via `ultra-plan-research`) to investigate. If confirmed infeasible, file a P0 item in INTERVIEW_QUEUE.md with the evidence and 1-2 alternative approaches, write a `blocked — infeasible` ADR stub in DECISIONS.md, and STOP — do not write a PLAN.md that plans around an impossibility.
 
-5. **Cross-node type survey.** For every type, event, or identifier crossing a node boundary (imported from sibling OR exported to consumer), mark in NOTES.md: `exported-locally` | `imported-from-sibling:<path>` | `undefined-in-siblings` | `ambiguous`. Evidence base for steps 6 and 9.
+5. **Parent-SPEC coverage scan.** Open parent SPEC.md and parent `CHILDREN.md`. Enumerate every responsibility the parent delegates to this child. Write the list to `nodes/<path>/NOTES.md` as a coverage checklist. Each item must map to a planned task before PLAN.md ships.
 
-6. **Resolve undefined/ambiguous boundary items.** Do NOT silently re-invent. Route each to one of:
+6. **Cross-node type survey.** For every type, event, or identifier crossing a node boundary (imported from sibling OR exported to consumer), mark in NOTES.md: `exported-locally` | `imported-from-sibling:<path>` | `undefined-in-siblings` | `ambiguous`. Evidence base for steps 7 and 10.
+
+7. **Resolve undefined/ambiguous boundary items.** Do NOT silently re-invent. Route each to one of:
    - **Interview item** → append to `INTERVIEW_QUEUE.md` at P1 (P0 if sibling is in flight), attach a default.
    - **DECISIONS.md ADR stub** → when the answer is a local architectural commitment.
    - **Proposed INTERFACE amendment** → append to sibling node's `NOTES.md` as a suggested addition (e.g. "PRRecord needs `title: string` for human-readable digests") and flag in PLAN header.
    Working around a missing field without filing one of these is a red flag.
 
-7. **Invoke `superpowers:writing-plans` discipline for local task structure.** File-structure map, bite-sized 5-step tasks (failing test → FAIL → implement → PASS → commit), no-placeholders, self-review. This skill extends that; it does not re-teach it. The RED-GREEN-REFACTOR lifecycle emitted in each task follows `ultra-test-driven-development` (Iron Law, rationalizations table); workers executing these tasks should also load `ultra-writing-tests` for test-writing craft (fast-test preference, DI-seam discipline, contract smoke tests).
+8. **Invoke `superpowers:writing-plans` discipline for local task structure.** File-structure map, bite-sized 5-step tasks (failing test → FAIL → implement → PASS → commit), no-placeholders, self-review. This skill extends that; it does not re-teach it. The RED-GREEN-REFACTOR lifecycle emitted in each task follows `ultra-test-driven-development` (Iron Law, rationalizations table); workers executing these tasks should also load `ultra-writing-tests` for test-writing craft (fast-test preference, DI-seam discipline, contract smoke tests).
 
-8. **Require contract smoke test(s).** Per distinct sibling consumer boundary, add a final task: a test feeding this node's output through a fake of the consumer's expected input signature. One per consumer. Non-optional — the last task(s) of every ultra leaf PLAN. See `ultra-writing-tests` for the contract-smoke-test pattern used here.
+9. **Require contract smoke test(s).** Per distinct sibling consumer boundary, add a final task: a test feeding this node's output through a fake of the consumer's expected input signature. One per consumer. Non-optional — the last task(s) of every ultra leaf PLAN. See `ultra-writing-tests` for the contract-smoke-test pattern used here.
 
-9. **Cite sibling INTERFACE.md paths in PLAN header.** Add a "Cross-node references" block after the Architecture line listing each sibling INTERFACE path consulted + last-modified timestamp. Stale relative to current decomposing cycle → "Freshness warning" note + P1 interview item.
+10. **Cite sibling INTERFACE.md paths in PLAN header.** Add a "Cross-node references" block after the Architecture line listing each sibling INTERFACE path consulted + last-modified timestamp. Stale relative to current decomposing cycle → "Freshness warning" note + P1 interview item.
 
-10. **Update SESSION.md and ROOT.md.** SESSION.md records PLAN-written checkpoint, reviewed-at date, interview/ADR items filed. ROOT.md marks this leaf `PLAN: ready`.
+11. **Update SESSION.md and ROOT.md.** SESSION.md records PLAN-written checkpoint, reviewed-at date, interview/ADR items filed. ROOT.md marks this leaf `PLAN: ready`.
 
 ## Red Flags — STOP and self-correct
 

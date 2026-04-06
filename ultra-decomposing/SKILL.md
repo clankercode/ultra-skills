@@ -26,7 +26,7 @@ Splits an oversized plan-tree node into child nodes with proven coverage, proven
 
 Operate on parent node path `nodes/<parent>/`. Produce children under `nodes/<parent>/children/<NN-slug>/`.
 
-1. **Read parent SPEC.md and INTERFACE.md.** Extract the complete responsibility list as an enumerated set R = {r1..rN}. If R is ambiguous, append clarifying questions to INTERVIEW_QUEUE.md at P0 and stop.
+1. **Read parent SPEC.md and INTERFACE.md.** Extract the complete responsibility list as an enumerated set R = {r1..rN}. If R is ambiguous, append clarifying questions to INTERVIEW_QUEUE.md at P0 and stop. **Feasibility scan:** while extracting responsibilities, flag any that appear technically infeasible or physically impossible (violates known limits, requires non-existent technology, demands contradictory properties). For each flagged item, dispatch a research subagent (via `ultra-plan-research`) to investigate before proceeding. If confirmed infeasible, surface as P0 in INTERVIEW_QUEUE.md with evidence and alternative approaches — do not decompose around an impossibility.
 
 2. **Identify split seams** before naming children. Seams come from: data ownership boundaries, failure domains, lifetime/cadence differences (persistent vs ephemeral, sync vs async, request vs background), public-API surface slices, deployment-shape differences. Write seams to `nodes/<parent>/NOTES.md`.
 
@@ -60,6 +60,7 @@ STOP and self-correct if any occur:
 - Public parent-API symbol with no child owner
 - No topological order emitted
 - INTERVIEW_QUEUE.md unchanged despite discovered ambiguities
+- Decomposing a node whose SPEC contains a requirement that looks technically infeasible without first dispatching research to verify and then pushing back with evidence
 
 ## Common Mistakes
 

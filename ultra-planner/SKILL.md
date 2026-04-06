@@ -53,6 +53,19 @@ Full spec: `ultra-skills/docs/DESIGN.md`.
 
 **Phases:** bootstrap → decompose → refine → prune → artifacts → leaf-plans → handoff. Revisit earlier phases when new info arrives.
 
+## Feasibility Gate (cross-cutting)
+
+Before accepting any requirement, feature, or architectural commitment into the plan tree, apply a feasibility check. If something appears impossible or technically infeasible — physically impossible, violates known theoretical limits, requires non-existent technology, or demands contradictory properties — do NOT silently plan around it or accept it at face value.
+
+**Procedure when a feasibility concern arises:**
+
+1. **Flag it.** Note the concern in the relevant node's `NOTES.md` with tag `feasibility-concern`.
+2. **Research first.** Dispatch a subagent (via `ultra-plan-research` or a targeted research subagent) to investigate whether the requirement is actually infeasible or whether there are creative approaches that could satisfy it. Do not conclude infeasibility from intuition alone.
+3. **Push back with evidence.** If research confirms infeasibility (or extreme impracticality), surface this to the user as a P0 item in `INTERVIEW_QUEUE.md` with: the requirement, why it's infeasible (with citations/evidence from research), and 1-2 alternative approaches that achieve the user's underlying goal. Write a draft ADR in `DECISIONS.md` with status `blocked — infeasible` and the evidence.
+4. **Do not proceed past the concern.** An infeasible requirement in a SPEC poisons every downstream artifact. Block leaf-plan writing for affected nodes until resolved.
+
+This gate applies during every phase — bootstrap, decompose, research, prune, and leaf-plan writing. Planning around an impossibility is worse than stopping to surface it.
+
 ## Dispatch Table
 
 For each phase, dispatch to a skill. Ultra-* sub-skills are preferred; fall back to superpowers:
@@ -110,6 +123,7 @@ STOP and self-correct if any of these occur:
 - Asking user one question at a time when many are queued — batch at checkpoints
 - Producing a flat list of tasks instead of a hierarchical tree when project is multi-subsystem
 - Running research inline (burns main-session context) instead of dispatching
+- Accepting a requirement that looks physically impossible or technically infeasible without dispatching a research subagent to investigate and then pushing back with evidence
 
 ## Common Mistakes
 

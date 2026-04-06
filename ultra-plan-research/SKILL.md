@@ -22,6 +22,7 @@ Answers a bounded research question with cited findings, a candidate evaluation 
 | Answer already recorded in DECISIONS.md or RESEARCH_LOG.md | No — cite existing entry |
 | Trivial factual recall leader is sure of | No — note inline, move on |
 | Question blocks on user preference, not facts | No — route to ultra-interviewing |
+| Feasibility concern — requirement looks impossible or technically infeasible | Yes — investigate with evidence before concluding |
 
 ## Procedure
 

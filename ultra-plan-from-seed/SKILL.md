@@ -51,7 +51,7 @@ Operate on a seed file path provided by the user or dispatcher. Target tree root
 
 9. **Top-level `INTERFACES.md` — cross-node shared types.** Every type, event, call, or identifier crossing a node boundary goes into `INTERFACES.md` at tree root (separate from per-node `INTERFACE.md`). Each entry: producer node, consumer node(s), defined-where. Undefined → `defined-where: TBD — see INTERVIEW_QUEUE`.
 
-10. **INTERVIEW_QUEUE.md — augment beyond seed's explicit open questions.** Copy every open question from the seed. THEN append bootstrap-inferred gaps from steps 3-9: ADRs with missing rationale, undefined cross-node types, depth-disparity flags, scope-tier ambiguities, invention candidates (struct shapes, event-name conventions, client choices, endpoint ownership, timing/lifecycle assumptions). Each new row: P0/P1/P2, topic, default, rationale. A bootstrap that produces fewer new questions than the seed listed is a red flag.
+10. **INTERVIEW_QUEUE.md — augment beyond seed's explicit open questions.** Copy every open question from the seed. THEN append bootstrap-inferred gaps from steps 3-9: ADRs with missing rationale, undefined cross-node types, depth-disparity flags, scope-tier ambiguities, invention candidates (struct shapes, event-name conventions, client choices, endpoint ownership, timing/lifecycle assumptions), and **feasibility concerns** (requirements that appear technically infeasible, physically impossible, or demand contradictory properties). For each feasibility concern, dispatch a research subagent to investigate before concluding infeasibility — then file as P0 with evidence and alternative approaches if confirmed. Each new row: P0/P1/P2, topic, default, rationale. A bootstrap that produces fewer new questions than the seed listed is a red flag.
 
 11. **Structural-coverage self-check.** Walk on disk:
     - **11a.** Every seed section mapped in ORIGIN.md?
@@ -77,6 +77,7 @@ Operate on a seed file path provided by the user or dispatcher. Target tree root
 - Not creating CHILDREN.md for any parent with ≥2 children
 - Leaving depth-disparity nodes unflagged in NOTES.md with no corresponding interview row
 - Interview queue shorter than or equal to the seed's original open-question list (no bootstrap-inferred gaps added)
+- Accepting a seed requirement that looks technically infeasible without dispatching research to investigate and then pushing back with evidence
 - No top-level `INTERFACES.md` despite cross-node types crossing boundaries
 - SESSION.md handoff without a named phase (2 vs 3) and rationale
 

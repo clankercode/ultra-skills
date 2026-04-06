@@ -15,7 +15,7 @@ Executes a leaf-node `PLAN.md` as a **leader** that dispatches fresh workers per
 
 **State file naming:** uses per-leaf `nodes/<path>/SESSION_STATE.md` (per-execution leader state for this leaf's run) — distinct from the tree-level `docs/ultra-plans/<slug>/SESSION.md` (cross-session planner brain used by `ultra-planner` and `ultra-implementing-solo`). Separate names avoid collision.
 
-**REQUIRED BACKGROUND:** Invoke `superpowers:subagent-driven-development` via the Skill tool. This skill EXTENDS it with hierarchical discipline (SHA pinning, leader-curated context, DIVERGENCE_LOG, HANDOFF). Not loaded → stop and load.
+**REQUIRED BACKGROUND:** Invoke `superpowers:subagent-driven-development` and `ultra-code-standards` via the Skill tool. This skill EXTENDS them with hierarchical discipline (SHA pinning, leader-curated context, DIVERGENCE_LOG, HANDOFF) and baked-in quality enforcement. Not loaded → stop and load.
 
 ## When to Use
 
@@ -28,6 +28,12 @@ Executes a leaf-node `PLAN.md` as a **leader** that dispatches fresh workers per
 | No subagent dispatch available | No — use `ultra-implementing-solo` |
 | Single-feature plan outside a tree | No — use `superpowers:subagent-driven-development` |
 | Interior node (has children) | No — decompose, don't implement |
+
+## Code Standards
+
+**REQUIRED:** The leader loads `ultra-code-standards` via the Skill tool. Workers load it too (included in every brief's "Skills to load"). Reviewers check against it mechanically. If `ultra-code-standards` is not loaded → stop and load it.
+
+Key standards enforced: LOC limits (1k soft / 2k hard), no duplicated code, proactive refactoring, clean separation of concerns, meaningful names, best practices. See the skill for full details and the reviewer checklist.
 
 ## Procedure
 
@@ -44,33 +50,43 @@ Operate on a leaf node path `nodes/<path>/`. Do not skip or reorder.
 5. **Declare parallelism schedule.** Default serial. Opt-in to parallel ONLY when every parallel worker has an **exclusive file-ownership declaration** (disjoint write-sets). Record the schedule in SESSION_STATE.md (e.g. `1 → 2 → {3,4,5} → 6 → {7,8}`). Never parallelize workers that share a file.
 
 6. **Per-task dispatch loop.** *(LEADER-ONLY — dispatches implementer + reviewer subagents via Task tool.)* If dispatched as a subagent, defer to leader and do not attempt to dispatch further workers. For each task (or parallel cohort):
-   - **Build the brief** from step 7, pasting sibling types verbatim from SESSION_STATE.md. Do NOT tell the worker to read sibling files.
+   - **Build the brief** from step 8, pasting sibling types verbatim from SESSION_STATE.md. Do NOT tell the worker to read sibling files.
    - **Dispatch** one implementer per task; parallel cohorts dispatched simultaneously.
    - Handle status (DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED) per base skill.
-   - **Two-stage review** (order fixed): spec-compliance first, then code-quality. Both must be green.
-   - **Update SESSION_STATE.md** with task #, commit SHA, both verdicts, one-line note.
+   - **Two-stage review** (order fixed): spec-compliance first, then code-quality. Code-quality review MUST check Code Standards: LOC limits on every touched file, duplication, naming, separation of concerns, security (injection, resource leaks, unvalidated input). Both must be green.
+   - **Fix loop on review failure.** If either review is not green: dispatch a fixer subagent with the review findings, specific issues with file paths, and the Code Standards section. Once fixer reports DONE, re-dispatch the SAME review (spec or quality) that failed. Max 2 fix cycles per review stage; if still not green → Tier 1 rollback (step 11).
+   - **Update SESSION_STATE.md** with task #, commit SHA, both verdicts, fix-loop iterations (if any), one-line note.
 
-7. **Dispatch brief template** — every brief MUST contain:
+7. **Mid-execution checkpoint review (every parallel cohort boundary OR every 3 serial tasks).** *(LEADER-ONLY)* Dispatch a code-reviewer subagent over all commits since the last checkpoint. Reviewer brief:
+   - Review scope: all files modified since last checkpoint SHA (from SESSION_STATE.md).
+   - Check for: cross-task duplication (workers cannot see each other's code), LOC limit breaches, security issues, architectural drift from SPEC.md, acceptance criteria coverage.
+   - Verdict: GREEN (continue) or ISSUES (list with file:line references and severity).
+
+   If ISSUES: dispatch a fixer subagent with the full issue list and Code Standards. Fixer has write access to all files in the leaf's ownership set. After fix, re-dispatch the same reviewer. Max 2 cycles. Persistent issues → log to DIVERGENCE_LOG.md, continue with noted technical debt.
+
+   Record in SESSION_STATE.md: `Checkpoint after task N: [GREEN | N issues fixed | N issues deferred]`.
+
+8. **Dispatch brief template** — every brief MUST contain:
    - **Context** — leader-curated scene + sibling types pasted verbatim with SHA citations
-   - **Skills to load** — workers load `ultra-test-driven-development` (RED-GREEN-REFACTOR discipline, Iron Law) and `ultra-writing-tests` (test-writing craft: fast-test preference, DI-seam discipline, contract smoke tests) as standard. Prefer fast tests per `ultra-writing-tests` — unit <100ms, integration <1s, context-dependent.
+   - **Skills to load** — workers load `ultra-test-driven-development` (RED-GREEN-REFACTOR discipline, Iron Law) and `ultra-writing-tests` (test-writing craft: fast-test preference, DI-seam discipline, contract smoke tests) as standard. Workers MUST also load `ultra-code-standards` for LOC limits, duplication rules, and quality bar. Prefer fast tests per `ultra-writing-tests` — unit <100ms, integration <1s, context-dependent.
    - **Task** — full PLAN.md task text, with TDD steps (RED test → FAIL → implement → PASS → commit)
-   - **Quality bar** — per-task checks
+   - **Quality bar** — Code Standards (from `ultra-code-standards`) are non-negotiable. Specifically: no file over 1,000 LOC (soft) / 2,000 LOC (hard), no duplicated logic, meaningful names, clean separation of concerns. Worker must check LOC on every touched file before reporting DONE.
    - **Stop condition** — what DONE means; what to report if BLOCKED / NEEDS_CONTEXT
-   - **Forbidden** — anti-patterns ("do not read sibling INTERFACE files", "do not invent fields", "do not edit files outside your ownership set", "do not use `toMatchObject` in integration tests — deep-equal required")
+   - **Forbidden** — anti-patterns ("do not read sibling INTERFACE files", "do not invent fields", "do not edit files outside your ownership set", "do not use `toMatchObject` in integration tests — deep-equal required", "do not commit a file exceeding 2,000 lines", "do not duplicate logic that exists in another file — extract to shared module")
    - **Exclusive file ownership** — required when parallel; every path the worker MAY write + MAY NOT touch
 
-8. **Freshness re-check before contract tests.** Before dispatching any contract/integration task, re-read the relevant sibling INTERFACE.md, compare SHA to pin. Drift → pause, write DIVERGENCE_LOG entry, decide (patch plan vs escalate) before dispatching.
+9. **Freshness re-check before contract tests.** Before dispatching any contract/integration task, re-read the relevant sibling INTERFACE.md, compare SHA to pin. Drift → pause, write DIVERGENCE_LOG entry, decide (patch plan vs escalate) before dispatching.
 
-9. **DIVERGENCE_LOG.md discipline.** When a task reveals a plan bug (type mismatch, missing sibling field, wrong task shape), append an entry to `nodes/<path>/DIVERGENCE_LOG.md`: what was wrong, evidence, resolution (amend-plan / queue-interview-item / rollback / escalate). Never silently absorb plan bugs.
+10. **DIVERGENCE_LOG.md discipline.** When a task reveals a plan bug (type mismatch, missing sibling field, wrong task shape), append an entry to `nodes/<path>/DIVERGENCE_LOG.md`: what was wrong, evidence, resolution (amend-plan / queue-interview-item / rollback / escalate). Never silently absorb plan bugs.
 
-10. **Rollback tiers** (pick smallest that applies):
+11. **Rollback tiers** (pick smallest that applies):
     - **Tier 1 — re-dispatch same task:** review failed → implementer fixes → re-review. No git rollback.
     - **Tier 2 — reset-and-patch-plan:** task revealed plan bug → `git reset --hard <last-green-SHA>` → patch PLAN.md → log to DIVERGENCE_LOG → re-dispatch from divergence. User informed.
     - **Tier 3 — escalate:** architectural divergence, sibling INTERFACE changed mid-flight, or repeated Tier 2 → STOP, write divergence report, hand back to parent planner / user.
 
-11. **Final review gate.** *(LEADER-ONLY — dispatches code-reviewer + cross-doc-review + shadow-drift subagents.)* If dispatched as a subagent, defer to leader. After the last task: dispatch a final code-reviewer over all commits in the worktree. For multi-task interface audits, delegate to `ultra-cross-doc-review`. Run `tsc --noEmit` / test suite as leader sanity check. If SHADOW/ was gated frozen in step 3, dispatch `ultra-shadow-drift` as a post-implementation drift check before writing HANDOFF.md.
+12. **Final review gate.** *(LEADER-ONLY — dispatches code-reviewer + cross-doc-review + shadow-drift subagents.)* If dispatched as a subagent, defer to leader. After the last task: dispatch a final code-reviewer over all commits in the worktree. For multi-task interface audits, delegate to `ultra-cross-doc-review`. Run `tsc --noEmit` / test suite as leader sanity check. If SHADOW/ was gated frozen in step 3, dispatch `ultra-shadow-drift` as a post-implementation drift check before writing HANDOFF.md.
 
-12. **Write HANDOFF.md.** Record: commit range, test results, sibling INTERFACE paths + SHAs built-against, known gaps, divergence entries. This is the drift-detection anchor. Then invoke `superpowers:finishing-a-development-branch`.
+13. **Write HANDOFF.md.** Record: commit range, test results, sibling INTERFACE paths + SHAs built-against, known gaps, divergence entries. This is the drift-detection anchor. Then invoke `superpowers:finishing-a-development-branch`.
 
 ## Red Flags — STOP and self-correct
 
@@ -86,6 +102,11 @@ Operate on a leaf node path `nodes/<path>/`. Do not skip or reorder.
 - Rolling forward past a Tier-3 divergence without user/planner input
 - Using `toMatchObject` (or other partial-match) in anchor integration tests
 - SESSION_STATE.md not updated after each task (breaks resumability)
+- Code-quality review that does not check LOC limits on modified files
+- Review failure without dispatching a fixer subagent (unless explicitly justified in SESSION_STATE.md)
+- Fixer dispatched without the review's specific issue list in its brief
+- Mid-execution checkpoint skipped because "tasks are going well"
+- Worker brief missing Code Standards reference (`ultra-code-standards`)
 
 ## Common Mistakes
 
@@ -96,6 +117,9 @@ Operate on a leaf node path `nodes/<path>/`. Do not skip or reorder.
 - **HANDOFF.md without SHAs.** Future drift becomes invisible. Record exact INTERFACE SHAs this node was built against.
 - **Forbidden-sections omitted.** Workers rationalize (`toMatchObject`, `any`, invented fields). Every brief needs concrete anti-patterns.
 - **Running reviewers in the wrong order.** Spec-compliance is cheap and cuts scope drift; run it first. Code-quality on non-spec-compliant code wastes the reviewer's cycle.
+- **Vague quality-bar in brief.** Telling a worker "write clean code" instead of referencing `ultra-code-standards`. Workers need concrete, checkable criteria — "no file over 1,000 LOC" not "keep files small."
+- **Skipped mid-execution checkpoint.** Cross-task duplication and architectural drift are invisible to individual workers. The checkpoint is where the leader catches what workers cannot see.
+- **Fix loop without re-review.** Dispatching a fixer but not re-running the failed review. The fixer may introduce new issues. Always re-review.
 
 ```!
 [ -d ~/src/ultra-skills ] && printf '\n---\n*Dogfooding: patch this skill in place when you find gaps.*\n'

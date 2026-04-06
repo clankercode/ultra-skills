@@ -765,6 +765,18 @@ The discipline for modifying ultra-skills itself. Extends superpowers:writing-sk
 
 ---
 
+### Cross-cutting Enhancement: Feasibility Gate (2026-04-05)
+
+**What:** Added feasibility-pushback guidance across 6 planning skills: ultra-planner, ultra-decomposing, ultra-writing-plans, ultra-scope-pruning, ultra-plan-from-seed, ultra-plan-research.
+
+**Pattern:** When a requirement appears technically infeasible or impossible, the agent must (1) flag it in NOTES.md, (2) dispatch a research subagent to investigate before concluding, (3) push back with evidence if confirmed infeasible via P0 in INTERVIEW_QUEUE.md + blocked ADR in DECISIONS.md, (4) block downstream planning until resolved.
+
+**Rationale:** Planning around an impossibility wastes all downstream effort. Research-first gate prevents false negatives (rejecting what's actually possible with creative approaches).
+
+**Testing:** Enhancement to already-GREEN-verified skills. Not a new skill — no standalone RED/GREEN required. Sanity-checked via haiku subagent.
+
+---
+
 ## This Session's Deliverables
 
 **Done if:**
