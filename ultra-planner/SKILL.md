@@ -98,6 +98,12 @@ For each phase, dispatch to a skill. Ultra-* sub-skills are preferred; fall back
 | TDD discipline (RED-GREEN-REFACTOR cycle, Iron Law) grounding `ultra-implementing-solo` / `ultra-implementing-team` per-task execution and `ultra-writing-plans` task structure | `ultra-test-driven-development` | `superpowers:test-driven-development` |
 | Test-craft (WHAT makes a good test) — fast-test preference, behavior-not-mocks, deterministic time, flow-vs-narrow, contract smoke tests, helper extraction, tiering, test-complicity guard. Loaded by workers at RED-test-writing time under `ultra-implementing-solo` / `ultra-implementing-team` | `ultra-writing-tests` | Inline "testing the mock?" self-check + superpowers:test-driven-development `testing-anti-patterns.md` |
 
+**Domain references (loaded conditionally by implementers when SUT matches):**
+
+| Domain | Ultra skill | Fallback |
+|---|---|---|
+| SUT is a TUI (Bubble Tea / Ratatui / Textual / Ink / tcell-tview / Rich) — headless harness, snapshot/golden tests, Elm-architecture precondition, agent-readable feedback loop | `ultra-tui-iteration` | Inline ad-hoc string-matching on `View()` (loses snapshot-default, harness selection, vision-API cost-ladder, UX-ambiguity escalation) |
+
 **Meta (suite self-modification):**
 
 | Phase | Ultra skill | Fallback |

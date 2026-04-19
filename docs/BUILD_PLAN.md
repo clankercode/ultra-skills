@@ -777,6 +777,40 @@ The discipline for modifying ultra-skills itself. Extends superpowers:writing-sk
 
 ---
 
+### Phase 7 — Domain references
+
+#### 24. ultra-tui-iteration
+
+**Pressure scenario:** A worker subagent is dispatched by `ultra-implementing-team` (or invoked solo via `ultra-implementing-solo`) to add a search/filter feature to a Bubble Tea (Go) TUI. The Iron Law of TDD applies. The worker is an AI agent and CANNOT see a real terminal — its only feedback channels are file contents and command stdout. No headless rendering test harness exists in the repo; only the `model.View() string` and `model.Update(msg) (Model, Cmd)` functions plus `tea.NewProgram(model).Run()` in `main`. Without skill: worker writes logic-only tests (Update transitions on the model struct), skips testing rendering output entirely, attempts to run `go run` and asserts on stdout (which is empty under the alt-screen renderer), or rationalises "rendering is just string concatenation, the test of `Update` is sufficient" — leaving the actual user-visible View completely unverified, with no agent-readable feedback loop for visual regressions.
+
+**GREEN expectation (with ultra-tui-iteration):** worker (1) recognizes that the View must be exercised through a headless harness, not real-terminal execution; (2) reaches for `teatest.NewTestModel` (or `tcell.NewSimulationScreen` for tview / `TestBackend` for Ratatui / `App.run_test()` Pilot for Textual / `renderToString` for Ink — picks the right one for the framework); (3) writes per-behavior snapshot/golden assertions on `View()` output (e.g. cursor position, filter applied, status line shows `Search: ban`); (4) keeps `Update` and `View` pure (no side-effects, no hidden state) per the Elm Architecture rule, so tests stay deterministic; (5) sets fast-test budgets (<100ms per test); (6) defers vision-API frame review to a stabilisation pass, not the iteration loop; (7) escalates to PTY-based control (e.g. `agent-tui`) only when the SUT is not under the worker's control. Skill is loaded conditionally — only when the SUT is a TUI; otherwise inert.
+
+**Dispatch fit:** Domain-reference skill; not a planning phase. Loaded by `ultra-implementing-solo` / `ultra-implementing-team` / `ultra-writing-tests` when the SUT is a TUI. Listed in `ultra-planner` dispatch table under a new "Domain references" section so the planner knows it exists and can route.
+
+**Test Results (2026-04-19, RED → GREEN):**
+
+| Dimension | Baseline (RED, no skill) | With ultra-tui-iteration (GREEN) |
+|---|---|---|
+| Render-test approach | Custom string-parser helper over `View()` | Direct `m.Update(msg)` + `View()` capture; pure-function discipline |
+| Snapshot/golden assertions | None — only `strings.Contains` substring checks | 3 inline full-frame snapshots (initial / mid-search / filter-applied) + structured + state assertions |
+| Headless harness recognition | Did not consider; would have run real terminal | Recognized teatest exists; chose direct `Update`/`View` calls with documented justification (pure TEA model, no Cmd async) |
+| Pure-View precondition | Not checked | Verified `View()` is pure string formatting; new state lives in model not framework |
+| Sanity-check feedback move | Not used | Dumped `View(state)` to `/tmp/baseline_view.txt` and `/tmp/view_trace.txt` — caught a real near-miss (trailing-newline drift in mid-search snapshot) |
+| RED-verify | Skipped because "feature obviously doesn't exist" | Static-RED-verify substituted (toolchain unreachable); each test traced to a compile-time "missing field" failure mode; substitution documented in trace |
+| UX ambiguity (status-line position) | Silently picked one position, locked into test | Surfaced in APPROACH.md with rationale; bottom-line chosen + 3-state footer extension; tests assert position so a different choice would loudly fail |
+| Eyeballed UX hints | Untested filter hint added "because nicer" | Three-state footer covered by dedicated test + snapshot |
+
+**GREEN clarification gaps surfaced (patched into skill):**
+- Inline-snapshot tier-1 endorsement when `-update` is impractical (added to "Default to snapshot/golden assertions")
+- Static-RED-verify substitute when test runner unreachable (added after the strategy-mix paragraph)
+- Characterization-test carve-out feedback was about sibling skill `ultra-test-driven-development`, not this skill — deferred
+
+**Verdict:** GREEN passed cleanly. No rationalizations from the baseline survived. Two skill clarifications patched in place; one deferred to sibling. Skill is MVP-verified.
+
+**Test artifacts:** `/tmp/ultra-tui-iteration-red/` (RED baseline — Bubble Tea search/filter task without skill), `/tmp/ultra-tui-iteration-green/` (GREEN — same task with skill loaded).
+
+---
+
 ### Cross-cutting Enhancement: Feasibility Gate (2026-04-05)
 
 **What:** Added feasibility-pushback guidance across 6 planning skills: ultra-planner, ultra-decomposing, ultra-writing-plans, ultra-scope-pruning, ultra-plan-from-seed, ultra-plan-research.

@@ -48,6 +48,8 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 | Creating or editing an ultra-* SKILL.md | `ultra-writing-skills` | Meta |
 | Reviewing a new or shipped ultra-* skill against the 11-dimension checklist | `ultra-reviewer` | Meta |
 | Codebase needs comprehensive multi-scope review campaign (components + flows + system + synthesis + iterative fix rounds) — heavyweight, requires user consent | `ultra-batch-review` | Post-implementation review |
+| Implementing or modifying a TUI (Bubble Tea, Ratatui, Textual, Ink, tcell/tview, Rich) — agent cannot see the terminal, render output is the surface, need a headless feedback loop | `ultra-tui-iteration` | Domain reference (loaded conditionally by implementers) |
+| TUI test uses substring assertions on `View()` instead of snapshot/golden, or worker rolled a custom string parser instead of the framework's harness, or rendering shipped untested because "it's purely UX" | `ultra-tui-iteration` | Domain reference |
 | Uncertain which skill to use / onboarding to the suite | `ultra-index` | Reference |
 
 ## Skill catalog (by phase)
@@ -91,6 +93,9 @@ Symptom-to-skill routing guide for the ultra-skills suite. When an agent or revi
 - `ultra-yagni` — Reactive speculative-scope flagger with 6 tells + BLOCKER/MAJOR/MINOR tiering + ripple-check.
 - `ultra-test-driven-development` — RED-GREEN-REFACTOR discipline, Iron Law, rationalizations table, fast-test preference. Grounds `ultra-implementing-solo` / `ultra-implementing-team` and the task structure `ultra-writing-plans` emits.
 - `ultra-writing-tests` — Test-craft companion to `ultra-test-driven-development`: WHAT makes a good test (behavior-not-mocks, deterministic time, flow-vs-narrow, contract smoke tests, helper extraction, tiering, test-complicity guard). Loaded by workers at RED-test-writing time.
+
+**Domain references (loaded conditionally by implementers when SUT matches)**
+- `ultra-tui-iteration` — TUI work (Bubble Tea, Ratatui, Textual, Ink, tcell/tview, Rich): Elm-architecture precondition, headless harness selection, snapshot/golden assertion default, sanity-dump feedback move, vision-API/PTY cost ladder, UX-ambiguity escalation. Loaded by `ultra-implementing-solo` / `ultra-implementing-team` / `ultra-writing-tests` only when the SUT is a TUI; inert otherwise.
 
 ## Cross-cutting lenses: when and how
 

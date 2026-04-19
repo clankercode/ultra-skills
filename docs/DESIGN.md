@@ -180,6 +180,7 @@ Reviews write findings to `REVIEW_<YYYY-MM-DD>_<type>.md` at the tree level, not
 | `ultra-writing-tests` | Craft / cross-cutting: WHAT makes a good test (behavior-not-mocks, deterministic time, flow-vs-narrow, contract smoke tests, helper extraction, tiering, test-complicity guard). Paired with `ultra-test-driven-development` (WHEN). | Test-craft guidance for writing good test code |
 | `ultra-index` | Reference: symptom-to-skill routing guide for the ultra-* suite (inverse of ultra-planner's dispatch table). | Symptom-to-skill routing guide for the ultra-* suite |
 | `ultra-batch-review` | Heavyweight review campaign: hierarchical scope decomposition, parallel review subagents, bottom-up synthesis (REVIEW.md + SYNTHESIS.md per parent), conflict-graph fix rounds. Requires user consent. | Multi-scope parallel review campaign for large codebases |
+| `ultra-tui-iteration` | Domain reference: agent-loop patterns for TUI work — Elm-architecture precondition, headless harness selection per framework (teatest / TestBackend / Pilot / ink-testing-library / tcell SimulationScreen / Rich Console), snapshot/golden assertion default, sanity-dump feedback move, vision-API/PTY cost ladder, UX-ambiguity escalation. Loaded conditionally by `ultra-implementing-solo` / `ultra-implementing-team` / `ultra-writing-tests` when the SUT is a TUI. | Agent-readable feedback loop for TUI implementation under TDD |
 
 ### Phase 3.5 — Goal-Driven Execution (adaptive, between planning and implementation)
 
